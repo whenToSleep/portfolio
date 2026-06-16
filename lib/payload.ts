@@ -1,7 +1,9 @@
 import "server-only";
+import { unstable_cache } from "next/cache";
 import { getPayload } from "payload";
 import config from "@payload-config";
 import type { Lang } from "./content";
+import { CACHE_TAGS } from "./revalidate";
 
 // Narrow view-model types for the frontend (hand-written; payload-types.ts
 // generation is pending — see CLAUDE.md CMS caveat).
@@ -107,84 +109,131 @@ const str = (o: Record<string, unknown>, k: string) => (o[k] as string) ?? "";
 const arr = (o: Record<string, unknown>, k: string) =>
   Array.isArray(o[k]) ? (o[k] as Record<string, unknown>[]) : [];
 
+// Each read is wrapped in unstable_cache so its result is cached and tagged.
+// Payload afterChange/afterDelete hooks (see lib/revalidate.ts) invalidate these
+// tags on publish, so the statically-rendered pages regenerate without a rebuild.
+// `locale` is part of the cache key (the function arg is bound at call time).
+
 export async function getTags(locale: Lang): Promise<TagItem[]> {
-  const p = await client();
-  const res = await p.find({ collection: "tags", locale, limit: 100, sort: "order", depth: 0 });
-  return res.docs.map((t: Record<string, unknown>) => ({
-    value: (t.value as string) ?? "",
-    label: (t.label as string) ?? "",
-    order: (t.order as number) ?? 0,
-  }));
+  return unstable_cache(
+    async () => {
+      const p = await client();
+      const res = await p.find({ collection: "tags", locale, limit: 100, sort: "order", depth: 0 });
+      return res.docs.map((t: Record<string, unknown>) => ({
+        value: (t.value as string) ?? "",
+        label: (t.label as string) ?? "",
+        order: (t.order as number) ?? 0,
+      }));
+    },
+    ["getTags", locale],
+    { tags: [CACHE_TAGS.tags] },
+  )();
 }
 
 export async function getWorks(locale: Lang): Promise<WorkCard[]> {
-  const p = await client();
-  const res = await p.find({ collection: "works", locale, limit: 100, sort: "num", depth: 1 });
-  return res.docs.map(mapWork);
+  return unstable_cache(
+    async () => {
+      const p = await client();
+      const res = await p.find({ collection: "works", locale, limit: 100, sort: "num", depth: 1 });
+      return res.docs.map(mapWork);
+    },
+    ["getWorks", locale],
+    { tags: [CACHE_TAGS.works, CACHE_TAGS.tags] },
+  )();
 }
 
 export async function getWorkBySlug(locale: Lang, slug: string): Promise<WorkCard | null> {
-  const p = await client();
-  const res = await p.find({
-    collection: "works",
-    locale,
-    where: { slug: { equals: slug } },
-    limit: 1,
-    depth: 1,
-  });
-  const doc = res.docs[0];
-  return doc ? mapWork(doc as Record<string, unknown>) : null;
+  return unstable_cache(
+    async () => {
+      const p = await client();
+      const res = await p.find({
+        collection: "works",
+        locale,
+        where: { slug: { equals: slug } },
+        limit: 1,
+        depth: 1,
+      });
+      const doc = res.docs[0];
+      return doc ? mapWork(doc as Record<string, unknown>) : null;
+    },
+    ["getWorkBySlug", locale, slug],
+    { tags: [CACHE_TAGS.works, CACHE_TAGS.work(slug)] },
+  )();
 }
 
 export async function getSiteSettings(locale: Lang): Promise<SiteSettings> {
-  const p = await client();
-  const g = (await p.findGlobal({ slug: "siteSettings", locale, depth: 0 })) as Record<string, unknown>;
-  return {
-    name: str(g, "name"),
-    city: str(g, "city"),
-    email: str(g, "email"),
-    commissions: str(g, "commissions"),
-    press: str(g, "press"),
-    socials: arr(g, "socials").map((s) => ({ label: str(s, "label"), handle: str(s, "handle"), url: str(s, "url") })),
-  };
+  return unstable_cache(
+    async () => {
+      const p = await client();
+      const g = (await p.findGlobal({ slug: "siteSettings", locale, depth: 0 })) as Record<string, unknown>;
+      return {
+        name: str(g, "name"),
+        city: str(g, "city"),
+        email: str(g, "email"),
+        commissions: str(g, "commissions"),
+        press: str(g, "press"),
+        socials: arr(g, "socials").map((s) => ({ label: str(s, "label"), handle: str(s, "handle"), url: str(s, "url") })),
+      };
+    },
+    ["getSiteSettings", locale],
+    { tags: [CACHE_TAGS.global("siteSettings")] },
+  )();
 }
 
 export async function getHome(locale: Lang): Promise<HomeContent> {
-  const p = await client();
-  const g = (await p.findGlobal({ slug: "home", locale, depth: 0 })) as Record<string, unknown>;
-  return {
-    metaLeft: str(g, "metaLeft"),
-    metaRight: str(g, "metaRight"),
-    statementLabel: str(g, "statementLabel"),
-    statement: str(g, "statement"),
-    figCaption: str(g, "figCaption"),
-    coverNote: str(g, "coverNote"),
-    readProject: str(g, "readProject"),
-    availLabel: str(g, "availLabel"),
-    avail: str(g, "avail"),
-    copyright: str(g, "copyright"),
-    place: str(g, "place"),
-  };
+  return unstable_cache(
+    async () => {
+      const p = await client();
+      const g = (await p.findGlobal({ slug: "home", locale, depth: 0 })) as Record<string, unknown>;
+      return {
+        metaLeft: str(g, "metaLeft"),
+        metaRight: str(g, "metaRight"),
+        statementLabel: str(g, "statementLabel"),
+        statement: str(g, "statement"),
+        figCaption: str(g, "figCaption"),
+        coverNote: str(g, "coverNote"),
+        readProject: str(g, "readProject"),
+        availLabel: str(g, "availLabel"),
+        avail: str(g, "avail"),
+        copyright: str(g, "copyright"),
+        place: str(g, "place"),
+      };
+    },
+    ["getHome", locale],
+    { tags: [CACHE_TAGS.global("home")] },
+  )();
 }
 
 export async function getLetter(locale: Lang): Promise<LetterContent> {
-  const p = await client();
-  const g = (await p.findGlobal({ slug: "letter", locale, depth: 0 })) as Record<string, unknown>;
-  return { dek: str(g, "dek"), paragraphs: str(g, "paragraphs"), signature: str(g, "signature") };
+  return unstable_cache(
+    async () => {
+      const p = await client();
+      const g = (await p.findGlobal({ slug: "letter", locale, depth: 0 })) as Record<string, unknown>;
+      return { dek: str(g, "dek"), paragraphs: str(g, "paragraphs"), signature: str(g, "signature") };
+    },
+    ["getLetter", locale],
+    { tags: [CACHE_TAGS.global("letter")] },
+  )();
 }
 
 export async function getMasthead(locale: Lang): Promise<MastheadContent> {
-  const p = await client();
-  const g = (await p.findGlobal({ slug: "masthead", locale, depth: 0 })) as Record<string, unknown>;
-  return {
-    dek: str(g, "dek"),
-    studioLabel: str(g, "studioLabel"),
-    roles: arr(g, "roles").map((r) => ({ role: str(r, "role"), name: str(r, "name"), contact: str(r, "contact") })),
-    distLabel: str(g, "distLabel"),
-    distribution: arr(g, "distribution").map((d) => ({ label: str(d, "label"), handle: str(d, "handle"), url: str(d, "url") })),
-    typeLabel: str(g, "typeLabel"),
-    typeBody: str(g, "typeBody"),
-    colophonLeft: str(g, "colophonLeft"),
-    colophonRight: str(g, "colophonRight"),
-  };
+  return unstable_cache(
+    async () => {
+      const p = await client();
+      const g = (await p.findGlobal({ slug: "masthead", locale, depth: 0 })) as Record<string, unknown>;
+      return {
+        dek: str(g, "dek"),
+        studioLabel: str(g, "studioLabel"),
+        roles: arr(g, "roles").map((r) => ({ role: str(r, "role"), name: str(r, "name"), contact: str(r, "contact") })),
+        distLabel: str(g, "distLabel"),
+        distribution: arr(g, "distribution").map((d) => ({ label: str(d, "label"), handle: str(d, "handle"), url: str(d, "url") })),
+        typeLabel: str(g, "typeLabel"),
+        typeBody: str(g, "typeBody"),
+        colophonLeft: str(g, "colophonLeft"),
+        colophonRight: str(g, "colophonRight"),
+      };
+    },
+    ["getMasthead", locale],
+    { tags: [CACHE_TAGS.global("masthead")] },
+  )();
 }

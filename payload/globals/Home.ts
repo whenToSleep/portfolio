@@ -1,4 +1,5 @@
 import type { GlobalConfig } from "payload";
+import { CACHE_TAGS, safeRevalidateTag } from "../../lib/revalidate";
 
 // Localized UI strings for the Cover (Home) screen. The exhaustive mapping of
 // the remaining nav/index labels is finalized in Phase 4 during seeding.
@@ -13,6 +14,9 @@ export const Home: GlobalConfig = {
   versions: { drafts: true },
   access: {
     read: () => true,
+  },
+  hooks: {
+    afterChange: [() => safeRevalidateTag(CACHE_TAGS.global("home"))],
   },
   fields: [
     {

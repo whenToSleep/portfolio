@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload";
+import { CACHE_TAGS, safeRevalidateTag } from "../../lib/revalidate";
 
 export const Tags: CollectionConfig = {
   slug: "tags",
@@ -11,6 +12,21 @@ export const Tags: CollectionConfig = {
   },
   access: {
     read: () => true,
+  },
+  hooks: {
+    // Tag labels appear in the works filter/cards, so invalidate both tags here.
+    afterChange: [
+      () => {
+        safeRevalidateTag(CACHE_TAGS.tags);
+        safeRevalidateTag(CACHE_TAGS.works);
+      },
+    ],
+    afterDelete: [
+      () => {
+        safeRevalidateTag(CACHE_TAGS.tags);
+        safeRevalidateTag(CACHE_TAGS.works);
+      },
+    ],
   },
   fields: [
     {

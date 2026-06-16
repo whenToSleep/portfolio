@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload";
+import { CACHE_TAGS, safeRevalidateTag } from "../../lib/revalidate";
 
 const slugify = (s: string): string =>
   s
@@ -20,6 +21,22 @@ export const Works: CollectionConfig = {
   versions: { drafts: true },
   access: {
     read: () => true,
+  },
+  hooks: {
+    // Invalidate the works index + this work's page when published/edited/deleted
+    // so the statically-rendered public pages regenerate (Phase 6).
+    afterChange: [
+      ({ doc }) => {
+        safeRevalidateTag(CACHE_TAGS.works);
+        if (doc?.slug) safeRevalidateTag(CACHE_TAGS.work(doc.slug as string));
+      },
+    ],
+    afterDelete: [
+      ({ doc }) => {
+        safeRevalidateTag(CACHE_TAGS.works);
+        if (doc?.slug) safeRevalidateTag(CACHE_TAGS.work(doc.slug as string));
+      },
+    ],
   },
   fields: [
     {

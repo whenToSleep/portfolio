@@ -1,4 +1,5 @@
 import type { GlobalConfig } from "payload";
+import { CACHE_TAGS, safeRevalidateTag } from "../../lib/revalidate";
 
 export const Letter: GlobalConfig = {
   slug: "letter",
@@ -11,6 +12,9 @@ export const Letter: GlobalConfig = {
   versions: { drafts: true },
   access: {
     read: () => true,
+  },
+  hooks: {
+    afterChange: [() => safeRevalidateTag(CACHE_TAGS.global("letter"))],
   },
   fields: [
     { name: "dek", type: "textarea", localized: true, label: "Підзаголовок" },

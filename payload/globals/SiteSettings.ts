@@ -1,4 +1,5 @@
 import type { GlobalConfig } from "payload";
+import { CACHE_TAGS, safeRevalidateTag } from "../../lib/revalidate";
 
 export const SiteSettings: GlobalConfig = {
   slug: "siteSettings",
@@ -11,6 +12,9 @@ export const SiteSettings: GlobalConfig = {
   versions: { drafts: true },
   access: {
     read: () => true,
+  },
+  hooks: {
+    afterChange: [() => safeRevalidateTag(CACHE_TAGS.global("siteSettings"))],
   },
   fields: [
     { name: "name", type: "text", localized: true, label: "Ім'я" },

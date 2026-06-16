@@ -1,4 +1,5 @@
 import type { GlobalConfig } from "payload";
+import { CACHE_TAGS, safeRevalidateTag } from "../../lib/revalidate";
 
 // Localized content for the Masthead (Imprint) screen.
 export const Masthead: GlobalConfig = {
@@ -12,6 +13,9 @@ export const Masthead: GlobalConfig = {
   versions: { drafts: true },
   access: {
     read: () => true,
+  },
+  hooks: {
+    afterChange: [() => safeRevalidateTag(CACHE_TAGS.global("masthead"))],
   },
   fields: [
     { name: "dek", type: "text", localized: true, label: "Підзаголовок" },
