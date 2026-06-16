@@ -1,23 +1,25 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { L, STR, TAGS, TAG_ORDER, WORKS, workSlug, type TagKey } from "@/lib/content";
+import Image from "next/image";
+import { STR } from "@/lib/content";
 import { ROUTES } from "@/lib/routes";
+import type { WorkCard, TagItem } from "@/lib/payload";
 import { useReveal } from "@/hooks/useReveal";
 import { useLang, useNavigate } from "../Providers";
 import { Plate } from "../Plate";
 
-export function IssuePage() {
+export function IssuePage({ works, tags }: { works: WorkCard[]; tags: TagItem[] }) {
   const lang = useLang();
   const navigate = useNavigate();
   const t = STR[lang];
-  const [hovered, setHovered] = useState<number | null>(null);
-  const [filter, setFilter] = useState<"All" | TagKey>("All");
+  const [hovered, setHovered] = useState<WorkCard["id"] | null>(null);
+  const [filter, setFilter] = useState<string>("All");
   useReveal(lang + filter);
 
   const list = useMemo(
-    () => (filter === "All" ? WORKS : WORKS.filter((w) => w.tags.includes(filter))),
-    [filter],
+    () => (filter === "All" ? works : works.filter((w) => w.tags.some((tg) => tg.value === filter))),
+    [filter, works],
   );
 
   return (
@@ -63,18 +65,18 @@ export function IssuePage() {
           >
             {t.filter_all}
           </a>
-          {TAG_ORDER.map((key) => (
+          {tags.map((tag) => (
             <a
-              key={key}
-              className={`e-link sub ${filter === key ? "is-active" : ""}`}
+              key={tag.value}
+              className={`e-link sub ${filter === tag.value ? "is-active" : ""}`}
               style={{ fontSize: 13 }}
-              onClick={() => setFilter(key)}
+              onClick={() => setFilter(tag.value)}
             >
-              {L(TAGS[key], lang)}
+              {tag.label}
             </a>
           ))}
           <span className="mono" style={{ opacity: 0.5, marginLeft: "auto" }}>
-            {t.showing} {list.length} {t.of} {WORKS.length} {t.works_word}
+            {t.showing} {list.length} {t.of} {works.length} {t.works_word}
           </span>
         </div>
 
@@ -88,7 +90,7 @@ export function IssuePage() {
                 className="reveal"
                 onMouseEnter={() => setHovered(w.id)}
                 onMouseLeave={() => setHovered(null)}
-                onClick={() => navigate(`/work/${workSlug(w)}`)}
+                onClick={() => navigate(`/work/${w.slug}`)}
                 data-cursor="View"
                 style={{
                   borderBottom: "1px solid var(--rule)",
@@ -116,7 +118,7 @@ export function IssuePage() {
                     <span style={{ opacity: 0.5 }}>—</span>
                   </div>
                   <div style={{ gridColumn: "2 / span 2" }} className="sub">
-                    {L(TAGS[w.tags[0]], lang)}
+                    {w.tags[0]?.label ?? ""}
                   </div>
                   <div
                     style={{
@@ -128,7 +130,7 @@ export function IssuePage() {
                       lineHeight: 1.15,
                     }}
                   >
-                    {L(w.title, lang)}
+                    {w.title}
                     <span style={{ fontStyle: "italic", opacity: 0.55, fontSize: 18, marginLeft: 10 }}>
                       — {w.client}
                     </span>
@@ -148,7 +150,17 @@ export function IssuePage() {
                         position: "relative",
                       }}
                     >
-                      <Plate variant={w.plate} style={{ width: "100%", height: "100%" }} />
+                      {w.coverImage ? (
+                        <Image
+                          src={w.coverImage.url}
+                          alt={w.coverImage.alt ?? w.title}
+                          fill
+                          sizes="200px"
+                          style={{ objectFit: "cover" }}
+                        />
+                      ) : (
+                        <Plate variant={w.plate} style={{ width: "100%", height: "100%" }} />
+                      )}
                     </div>
                   </div>
                 </div>
@@ -172,7 +184,7 @@ export function IssuePage() {
               className="e-link sub"
               data-cursor="Read"
               style={{ fontSize: 11 }}
-              onClick={() => navigate(`/work/${workSlug(list[0] || WORKS[0])}`)}
+              onClick={() => navigate(`/work/${(list[0] || works[0])?.slug ?? ""}`)}
             >
               {t.pag_project}
             </a>

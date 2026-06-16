@@ -9,7 +9,7 @@ prototype into a production **Next.js (App Router) + Payload CMS** application, 
 - **Phase 1 — done.** Next.js 16 scaffold; prototype ported 1:1 (pixel-faithful vs baseline). Content still hardcoded in `lib/content.ts`.
 - **Phase 2 — done.** Route-based i18n: every page under `/[lang]` (`/en`, `/uk`); `proxy.ts` redirects bare paths to the preferred locale; language switcher navigates and sets a `NEXT_LOCALE` cookie. SSR serves the correct language; visual regression intact (20/20).
 - **Phase 3 — done.** Payload CMS 3 installed into the app. Admin at `/admin`, Postgres (Neon), localization `en`/`uk`. Collections `works`/`tags`/`media`/`users` + globals `siteSettings`/`home`/`letter`/`masthead`. Verified end-to-end: schema pushed to Neon, first admin created, work-with-image created, field localization works (en/uk). Frontend (phases 0–2) untouched. **Content is NOT yet read from Payload** — that's Phase 4.
-- **Next: Phase 4** (seed content + wire frontend to Payload Local API). See roadmap below.
+- **Phase 4 — in progress.** Seed infra (`scripts/seed.mts`, idempotent, REST) seeds Tags(5) + Works(12) EN+UK from `lib/content.ts`. The **Index (`/works`) page is fully CMS-driven** (server page → `lib/payload.ts` Local API → client `IssuePage` via props); matches baseline; images fall back to `.plate` when absent; verified an admin edit reflects on the site. **Remaining: wire Home / Project / Letter / Masthead** (globals + richText decision) and their seeds.
 
 ## Commands
 ```bash
@@ -61,8 +61,11 @@ components/
   Plate.tsx, Html.tsx
   pages/*.tsx       # the 5 screens (client components)
 hooks/useReveal.ts  # scroll-reveal
-lib/content.ts      # ALL content + L() — temporary; replaced by Payload in Phase 4
+lib/content.ts      # content + UI-chrome strings + L(). Works/Tags now come from CMS; the
+                    # remaining pages (Home/Project/Letter/Masthead) + chrome labels still read here.
+lib/payload.ts      # server-only Local API data layer: getWorks/getTags/getWorkBySlug (+ view-model types)
 lib/routes.ts       # ROUTES map + activeKey()
+scripts/seed.mts    # idempotent REST seed (run `pnpm seed` against a running dev server)
 ```
 
 ## Invariants (don't break these)

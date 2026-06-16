@@ -42,6 +42,17 @@ export const Works: CollectionConfig = {
       label: "Теги",
     },
     {
+      name: "plate",
+      type: "number",
+      defaultValue: 1,
+      min: 1,
+      max: 4,
+      admin: {
+        position: "sidebar",
+        description: "Візерунок плейсхолдера (1–4), поки немає зображення.",
+      },
+    },
+    {
       name: "coverImage",
       type: "upload",
       relationTo: "media",
