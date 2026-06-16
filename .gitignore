@@ -1,0 +1,38 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+
+# next.js
+/.next/
+/out/
+/build
+next-env.d.ts
+
+# production / payload generated
+/dist
+
+# env files
+.env
+.env.*
+!.env.example
+
+# debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# os / editor
+.DS_Store
+Thumbs.db
+*.pem
+
+# testing / playwright
+/playwright-report/
+/test-results/
+/screenshots/
+
+# typescript
+*.tsbuildinfo

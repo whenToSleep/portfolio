@@ -1,0 +1,1880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Anya Volkov — An Illustrator's Journal</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Source+Serif+4:opsz,wght,ital@8..60,300..900,0;8..60,300..900,1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --paper: #FFFFFE;
+    --ink:   #0F0F0F;
+    --rule:  #E5E5E5;
+    --accent:#DD3624;
+    --plate-bg: #efeae0;
+    --plate-stripe: rgba(15,15,15,0.05);
+    --plate-stripe-accent: rgba(221,54,36,0.07);
+    --gutter: 24px;
+    --col: minmax(0,1fr);
+    --page-w: 1280px;
+    --display: "Playfair Display", "Old Standard TT", Georgia, serif;
+    --condensed: "Bricolage Grotesque", "GT America Condensed", "Helvetica Neue", sans-serif;
+    --body: "Source Serif 4", "Söhne", Georgia, serif;
+    --mono: "JetBrains Mono", "IBM Plex Mono", ui-monospace, monospace;
+  }
+
+  [data-theme="dark"] {
+    --paper: #14110D;
+    --ink:   #ECE6D9;
+    --rule:  #2C2722;
+    --plate-bg: #1d1a14;
+    --plate-stripe: rgba(236,230,217,0.06);
+    --plate-stripe-accent: rgba(232,80,62,0.12);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html, body { margin: 0; padding: 0; background: var(--paper); color: var(--ink); }
+  html { transition: background-color 420ms ease; }
+  body {
+    transition: background-color 420ms ease, color 420ms ease;
+    font-family: var(--body);
+    font-size: 17px;
+    line-height: 1.53;
+    font-feature-settings: "liga", "dlig", "kern";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    hanging-punctuation: first last;
+    overflow-x: hidden;
+  }
+
+  /* ---------- Layout primitives ---------- */
+  .page {
+    max-width: var(--page-w);
+    margin: 0 auto;
+    padding: 0 40px;
+    position: relative;
+  }
+  .grid-12 {
+    display: grid;
+    grid-template-columns: repeat(12, var(--col));
+    column-gap: var(--gutter);
+  }
+
+  /* Optional grid overlay */
+  body.grid-on .page::before {
+    content: "";
+    position: absolute;
+    inset: 0 40px;
+    display: grid;
+    grid-template-columns: repeat(12, var(--col));
+    column-gap: var(--gutter);
+    pointer-events: none;
+    z-index: 9999;
+  }
+  body.grid-on .page::after {
+    content: "";
+    position: absolute;
+    inset: 0 40px;
+    background-image:
+      repeating-linear-gradient(to right,
+        transparent 0,
+        transparent calc((100% - 11 * var(--gutter)) / 12),
+        rgba(221, 54, 36, 0.06) calc((100% - 11 * var(--gutter)) / 12),
+        rgba(221, 54, 36, 0.06) calc((100% - 11 * var(--gutter)) / 12 + var(--gutter)));
+    pointer-events: none;
+    z-index: 9998;
+  }
+
+  /* ---------- Type ---------- */
+  .display {
+    font-family: var(--display);
+    font-variation-settings: "opsz" 144, "SOFT" 30, "wght" 400;
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    line-height: 0.95;
+  }
+  .display-italic {
+    font-family: var(--display);
+    font-style: italic;
+    font-variation-settings: "opsz" 144, "SOFT" 30, "wght" 400;
+  }
+  .sub {
+    font-family: var(--condensed);
+    font-stretch: 75%;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .mono {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .body-serif { font-family: var(--body); }
+
+  /* Editorial link — red underline grows left→right on hover */
+  .e-link {
+    color: inherit;
+    text-decoration: none;
+    background-image: linear-gradient(var(--accent), var(--accent));
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 0% 1px;
+    transition: background-size 250ms ease, color 250ms ease;
+    padding-bottom: 1px;
+    cursor: pointer;
+  }
+  .e-link:hover { background-size: 100% 1px; }
+  .e-link.is-active {
+    background-size: 100% 1px;
+    color: var(--accent);
+  }
+
+  /* ---------- Top masthead nav ---------- */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--paper);
+    transition: transform 320ms ease, background-color 420ms ease, border-color 420ms ease;
+    border-bottom: 1px solid var(--ink);
+  }
+
+  /* ---------- Lang / theme controls ---------- */
+  .meta-controls {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .meta-controls .ctrl-group { display: flex; align-items: baseline; gap: 6px; }
+  .meta-controls .sep { opacity: 0.3; }
+  .meta-controls .divider { opacity: 0.25; margin: 0 2px; }
+  .meta-controls a { cursor: pointer; }
+  .meta-controls a.on { color: var(--accent); }
+  .meta-controls a:not(.on) { opacity: 0.55; }
+  .meta-controls a:not(.on):hover { opacity: 1; }
+  .topbar.hidden { transform: translateY(-100%); }
+  .topbar-inner {
+    max-width: var(--page-w);
+    margin: 0 auto;
+    padding: 14px 40px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .topbar .brand {
+    font-family: var(--display);
+    font-variation-settings: "opsz" 144, "SOFT" 30, "wght" 500;
+    font-size: 20px;
+    letter-spacing: -0.01em;
+    cursor: pointer;
+  }
+  .topbar .brand .em { font-style: italic; }
+  .topbar nav {
+    display: flex;
+    gap: 28px;
+  }
+  .topbar nav .e-link {
+    font-family: var(--condensed);
+    font-stretch: 75%;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .topbar .folio {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink);
+    opacity: 0.7;
+  }
+
+  /* ---------- View Transitions / fade ---------- */
+  .view {
+    opacity: 1;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .view { animation: fadein 250ms ease; }
+  }
+  @keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 250ms;
+  }
+
+  /* ---------- Scroll-reveal (slide only — content never hidden by opacity) ---------- */
+  .reveal { transform: none; }
+  body.reveal-ready .reveal:not(.is-in) {
+    transform: translateX(-12px);
+    transition: transform 600ms ease;
+  }
+  body.reveal-ready .reveal.from-right:not(.is-in) {
+    transform: translateX(12px);
+  }
+  body.reveal-ready .reveal.is-in {
+    transform: translateX(0);
+    transition: transform 600ms ease;
+  }
+
+  /* ---------- Placeholders for illustrations ---------- */
+  .plate {
+    position: relative;
+    background-color: var(--plate-bg);
+    background-image:
+      repeating-linear-gradient(135deg,
+        var(--plate-stripe) 0 1px,
+        transparent 1px 8px);
+    border: 1px solid var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink);
+    overflow: hidden;
+    transition: background-color 420ms ease, border-color 420ms ease;
+  }
+  .plate .label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.7;
+    text-align: center;
+    padding: 0 12px;
+  }
+  .plate.v-2 {
+    background-image: repeating-linear-gradient(45deg, var(--plate-stripe-accent) 0 1px, transparent 1px 10px);
+  }
+  .plate.v-3 {
+    background-image: repeating-linear-gradient(90deg, var(--plate-stripe) 0 1px, transparent 1px 12px);
+  }
+  .plate.v-4 {
+    background-image:
+      repeating-linear-gradient(0deg, var(--plate-stripe) 0 1px, transparent 1px 14px),
+      repeating-linear-gradient(90deg, var(--plate-stripe) 0 1px, transparent 1px 14px);
+  }
+
+  /* ---------- Rules ---------- */
+  .hrule { border: 0; border-top: 1px solid var(--rule); margin: 0; }
+  .hrule.ink { border-top: 1px solid var(--ink); }
+  .hrule.thick { border-top: 2px solid var(--ink); }
+
+  /* ---------- Hanging punctuation simulation for body ---------- */
+  .article-body p {
+    margin: 0 0 1.2em 0;
+    font-family: var(--body);
+    font-size: 17px;
+    line-height: 1.62;
+    text-indent: 1.5em;
+  }
+  .article-body p:first-of-type { text-indent: 0; }
+
+  /* Drop cap */
+  .dropcap::first-letter {
+    font-family: var(--display);
+    font-variation-settings: "opsz" 144, "SOFT" 30, "wght" 500;
+    float: left;
+    font-size: 5.8em;
+    line-height: 0.85;
+    padding: 0.08em 0.08em 0 0;
+    margin-right: 0.04em;
+  }
+
+  /* ---------- Mobile ---------- */
+  @media (max-width: 820px) {
+    .page { padding: 0 22px; }
+    .topbar-inner { padding: 12px 22px; flex-wrap: wrap; gap: 12px; }
+    .topbar nav { gap: 18px; }
+  }
+  @media (max-width: 600px) {
+    .grid-12 { grid-template-columns: 1fr; }
+    .display { font-size: 48px !important; }
+    .hide-mobile { display: none; }
+  }
+
+  /* Tweaks panel host accommodations */
+  .footer-imprint { padding: 80px 0 60px; }
+
+  /* selection */
+  ::selection { background: var(--accent); color: var(--paper); }
+
+  /* ---------- Cinematic custom cursor ---------- */
+  .cursor-dot {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 12px;
+    height: 12px;
+    margin: -6px 0 0 -6px;
+    border-radius: 50%;
+    background: #E8E4DD;
+    mix-blend-mode: difference;
+    pointer-events: none;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition:
+      width 360ms cubic-bezier(0.22, 1, 0.36, 1),
+      height 360ms cubic-bezier(0.22, 1, 0.36, 1),
+      margin 360ms cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 240ms ease;
+    will-change: transform;
+  }
+  .cursor-dot.is-visible { opacity: 1; }
+  .cursor-dot::after {
+    content: attr(data-label);
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--paper);
+    opacity: 0;
+    transition: opacity 220ms ease;
+    white-space: nowrap;
+  }
+  .cursor-dot.is-hover {
+    width: 56px;
+    height: 56px;
+    margin: -28px 0 0 -28px;
+  }
+  .cursor-dot.is-hover::after { opacity: 1; }
+
+  body.cursor-on,
+  body.cursor-on a,
+  body.cursor-on button,
+  body.cursor-on [data-cursor] { cursor: none; }
+
+  @media (hover: none), (max-width: 768px) {
+    .cursor-dot { display: none !important; }
+    a, button, [data-cursor] { cursor: pointer; }
+  }
+</style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+  <script type="text/babel" data-source="tweaks-panel.jsx">
+
+// tweaks-panel.jsx
+// Reusable Tweaks shell + form-control helpers.
+//
+// Owns the host protocol (listens for __activate_edit_mode / __deactivate_edit_mode,
+// posts __edit_mode_available / __edit_mode_set_keys / __edit_mode_dismissed) so
+// individual prototypes don't re-roll it. Ships a consistent set of controls so you
+// don't hand-draw <input type="range">, segmented radios, steppers, etc.
+//
+// Usage (in an HTML file that loads React + Babel):
+//
+//   const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+//     "primaryColor": "#D97757",
+//     "palette": ["#D97757", "#29261b", "#f6f4ef"],
+//     "fontSize": 16,
+//     "density": "regular",
+//     "dark": false
+//   }/*EDITMODE-END*/;
+//
+//   function App() {
+//     const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+//     return (
+//       <div style={{ fontSize: t.fontSize, color: t.primaryColor }}>
+//         Hello
+//         <TweaksPanel>
+//           <TweakSection label="Typography" />
+//           <TweakSlider label="Font size" value={t.fontSize} min={10} max={32} unit="px"
+//                        onChange={(v) => setTweak('fontSize', v)} />
+//           <TweakRadio  label="Density" value={t.density}
+//                        options={['compact', 'regular', 'comfy']}
+//                        onChange={(v) => setTweak('density', v)} />
+//           <TweakSection label="Theme" />
+//           <TweakColor  label="Primary" value={t.primaryColor}
+//                        options={['#D97757', '#2A6FDB', '#1F8A5B', '#7A5AE0']}
+//                        onChange={(v) => setTweak('primaryColor', v)} />
+//           <TweakColor  label="Palette" value={t.palette}
+//                        options={[['#D97757', '#29261b', '#f6f4ef'],
+//                                  ['#475569', '#0f172a', '#f1f5f9']]}
+//                        onChange={(v) => setTweak('palette', v)} />
+//           <TweakToggle label="Dark mode" value={t.dark}
+//                        onChange={(v) => setTweak('dark', v)} />
+//         </TweaksPanel>
+//       </div>
+//     );
+//   }
+//
+// ─────────────────────────────────────────────────────────────────────────────
+
+const __TWEAKS_STYLE = `
+  .twk-panel{position:fixed;right:16px;bottom:16px;z-index:2147483646;width:280px;
+    max-height:calc(100vh - 32px);display:flex;flex-direction:column;
+    transform:scale(var(--dc-inv-zoom,1));transform-origin:bottom right;
+    background:rgba(250,249,247,.78);color:#29261b;
+    -webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);
+    border:.5px solid rgba(255,255,255,.6);border-radius:14px;
+    box-shadow:0 1px 0 rgba(255,255,255,.5) inset,0 12px 40px rgba(0,0,0,.18);
+    font:11.5px/1.4 ui-sans-serif,system-ui,-apple-system,sans-serif;overflow:hidden}
+  .twk-hd{display:flex;align-items:center;justify-content:space-between;
+    padding:10px 8px 10px 14px;cursor:move;user-select:none}
+  .twk-hd b{font-size:12px;font-weight:600;letter-spacing:.01em}
+  .twk-x{appearance:none;border:0;background:transparent;color:rgba(41,38,27,.55);
+    width:22px;height:22px;border-radius:6px;cursor:default;font-size:13px;line-height:1}
+  .twk-x:hover{background:rgba(0,0,0,.06);color:#29261b}
+  .twk-body{padding:2px 14px 14px;display:flex;flex-direction:column;gap:10px;
+    overflow-y:auto;overflow-x:hidden;min-height:0;
+    scrollbar-width:thin;scrollbar-color:rgba(0,0,0,.15) transparent}
+  .twk-body::-webkit-scrollbar{width:8px}
+  .twk-body::-webkit-scrollbar-track{background:transparent;margin:2px}
+  .twk-body::-webkit-scrollbar-thumb{background:rgba(0,0,0,.15);border-radius:4px;
+    border:2px solid transparent;background-clip:content-box}
+  .twk-body::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,.25);
+    border:2px solid transparent;background-clip:content-box}
+  .twk-row{display:flex;flex-direction:column;gap:5px}
+  .twk-row-h{flex-direction:row;align-items:center;justify-content:space-between;gap:10px}
+  .twk-lbl{display:flex;justify-content:space-between;align-items:baseline;
+    color:rgba(41,38,27,.72)}
+  .twk-lbl>span:first-child{font-weight:500}
+  .twk-val{color:rgba(41,38,27,.5);font-variant-numeric:tabular-nums}
+
+  .twk-sect{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+    color:rgba(41,38,27,.45);padding:10px 0 0}
+  .twk-sect:first-child{padding-top:0}
+
+  .twk-field{appearance:none;box-sizing:border-box;width:100%;min-width:0;height:26px;padding:0 8px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:7px;
+    background:rgba(255,255,255,.6);color:inherit;font:inherit;outline:none}
+  .twk-field:focus{border-color:rgba(0,0,0,.25);background:rgba(255,255,255,.85)}
+  select.twk-field{padding-right:22px;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='rgba(0,0,0,.5)' d='M0 0h10L5 6z'/></svg>");
+    background-repeat:no-repeat;background-position:right 8px center}
+
+  .twk-slider{appearance:none;-webkit-appearance:none;width:100%;height:4px;margin:6px 0;
+    border-radius:999px;background:rgba(0,0,0,.12);outline:none}
+  .twk-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;
+    width:14px;height:14px;border-radius:50%;background:#fff;
+    border:.5px solid rgba(0,0,0,.12);box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:default}
+  .twk-slider::-moz-range-thumb{width:14px;height:14px;border-radius:50%;
+    background:#fff;border:.5px solid rgba(0,0,0,.12);box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:default}
+
+  .twk-seg{position:relative;display:flex;padding:2px;border-radius:8px;
+    background:rgba(0,0,0,.06);user-select:none}
+  .twk-seg-thumb{position:absolute;top:2px;bottom:2px;border-radius:6px;
+    background:rgba(255,255,255,.9);box-shadow:0 1px 2px rgba(0,0,0,.12);
+    transition:left .15s cubic-bezier(.3,.7,.4,1),width .15s}
+  .twk-seg.dragging .twk-seg-thumb{transition:none}
+  .twk-seg button{appearance:none;position:relative;z-index:1;flex:1;border:0;
+    background:transparent;color:inherit;font:inherit;font-weight:500;min-height:22px;
+    border-radius:6px;cursor:default;padding:4px 6px;line-height:1.2;
+    overflow-wrap:anywhere}
+
+  .twk-toggle{position:relative;width:32px;height:18px;border:0;border-radius:999px;
+    background:rgba(0,0,0,.15);transition:background .15s;cursor:default;padding:0}
+  .twk-toggle[data-on="1"]{background:#34c759}
+  .twk-toggle i{position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;
+    background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .15s}
+  .twk-toggle[data-on="1"] i{transform:translateX(14px)}
+
+  .twk-num{display:flex;align-items:center;box-sizing:border-box;min-width:0;height:26px;padding:0 0 0 8px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:7px;background:rgba(255,255,255,.6)}
+  .twk-num-lbl{font-weight:500;color:rgba(41,38,27,.6);cursor:ew-resize;
+    user-select:none;padding-right:8px}
+  .twk-num input{flex:1;min-width:0;height:100%;border:0;background:transparent;
+    font:inherit;font-variant-numeric:tabular-nums;text-align:right;padding:0 8px 0 0;
+    outline:none;color:inherit;-moz-appearance:textfield}
+  .twk-num input::-webkit-inner-spin-button,.twk-num input::-webkit-outer-spin-button{
+    -webkit-appearance:none;margin:0}
+  .twk-num-unit{padding-right:8px;color:rgba(41,38,27,.45)}
+
+  .twk-btn{appearance:none;height:26px;padding:0 12px;border:0;border-radius:7px;
+    background:rgba(0,0,0,.78);color:#fff;font:inherit;font-weight:500;cursor:default}
+  .twk-btn:hover{background:rgba(0,0,0,.88)}
+  .twk-btn.secondary{background:rgba(0,0,0,.06);color:inherit}
+  .twk-btn.secondary:hover{background:rgba(0,0,0,.1)}
+
+  .twk-swatch{appearance:none;-webkit-appearance:none;width:56px;height:22px;
+    border:.5px solid rgba(0,0,0,.1);border-radius:6px;padding:0;cursor:default;
+    background:transparent;flex-shrink:0}
+  .twk-swatch::-webkit-color-swatch-wrapper{padding:0}
+  .twk-swatch::-webkit-color-swatch{border:0;border-radius:5.5px}
+  .twk-swatch::-moz-color-swatch{border:0;border-radius:5.5px}
+
+  .twk-chips{display:flex;gap:6px}
+  .twk-chip{position:relative;appearance:none;flex:1;min-width:0;height:46px;
+    padding:0;border:0;border-radius:6px;overflow:hidden;cursor:default;
+    box-shadow:0 0 0 .5px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.06);
+    transition:transform .12s cubic-bezier(.3,.7,.4,1),box-shadow .12s}
+  .twk-chip:hover{transform:translateY(-1px);
+    box-shadow:0 0 0 .5px rgba(0,0,0,.18),0 4px 10px rgba(0,0,0,.12)}
+  .twk-chip[data-on="1"]{box-shadow:0 0 0 1.5px rgba(0,0,0,.85),
+    0 2px 6px rgba(0,0,0,.15)}
+  .twk-chip>span{position:absolute;top:0;bottom:0;right:0;width:34%;
+    display:flex;flex-direction:column;box-shadow:-1px 0 0 rgba(0,0,0,.1)}
+  .twk-chip>span>i{flex:1;box-shadow:0 -1px 0 rgba(0,0,0,.1)}
+  .twk-chip>span>i:first-child{box-shadow:none}
+  .twk-chip svg{position:absolute;top:6px;left:6px;width:13px;height:13px;
+    filter:drop-shadow(0 1px 1px rgba(0,0,0,.3))}
+`;
+
+// ── useTweaks ───────────────────────────────────────────────────────────────
+// Single source of truth for tweak values. setTweak persists via the host
+// (__edit_mode_set_keys → host rewrites the EDITMODE block on disk).
+function useTweaks(defaults) {
+  const [values, setValues] = React.useState(defaults);
+  // Accepts either setTweak('key', value) or setTweak({ key: value, ... }) so a
+  // useState-style call doesn't write a "[object Object]" key into the persisted
+  // JSON block.
+  const setTweak = React.useCallback((keyOrEdits, val) => {
+    const edits = typeof keyOrEdits === 'object' && keyOrEdits !== null
+      ? keyOrEdits : { [keyOrEdits]: val };
+    setValues((prev) => ({ ...prev, ...edits }));
+    window.parent.postMessage({ type: '__edit_mode_set_keys', edits }, '*');
+    // Same-window signal so in-page listeners (deck-stage rail thumbnails)
+    // can react — the parent message only reaches the host, not peers.
+    window.dispatchEvent(new CustomEvent('tweakchange', { detail: edits }));
+  }, []);
+  return [values, setTweak];
+}
+
+// ── TweaksPanel ─────────────────────────────────────────────────────────────
+// Floating shell. Registers the protocol listener BEFORE announcing
+// availability — if the announce ran first, the host's activate could land
+// before our handler exists and the toolbar toggle would silently no-op.
+// The close button posts __edit_mode_dismissed so the host's toolbar toggle
+// flips off in lockstep; the host echoes __deactivate_edit_mode back which
+// is what actually hides the panel.
+function TweaksPanel({ title = 'Tweaks', noDeckControls = false, children }) {
+  const [open, setOpen] = React.useState(false);
+  const dragRef = React.useRef(null);
+  // Auto-inject a rail toggle when a <deck-stage> is on the page. The
+  // toggle drives the deck's per-viewer _railVisible via window message;
+  // state is mirrored from the same localStorage key the deck reads so
+  // the control reflects reality across reloads. The mechanism is the
+  // message — authors who want custom placement can post it directly
+  // and pass noDeckControls to suppress this one.
+  const hasDeckStage = React.useMemo(
+    () => typeof document !== 'undefined' && !!document.querySelector('deck-stage'),
+    [],
+  );
+  // deck-stage enables its rail in connectedCallback, but this panel can
+  // mount before that element has upgraded. The initial read catches the
+  // common case; the listener covers mounting first. (Older deck-stage.js
+  // copies still wait for the host's __omelette_rail_enabled postMessage —
+  // same listener handles those.)
+  const [railEnabled, setRailEnabled] = React.useState(
+    () => hasDeckStage && !!document.querySelector('deck-stage')?._railEnabled,
+  );
+  React.useEffect(() => {
+    if (!hasDeckStage || railEnabled) return undefined;
+    const onMsg = (e) => {
+      if (e.data && e.data.type === '__omelette_rail_enabled') setRailEnabled(true);
+    };
+    window.addEventListener('message', onMsg);
+    return () => window.removeEventListener('message', onMsg);
+  }, [hasDeckStage, railEnabled]);
+  const [railVisible, setRailVisible] = React.useState(() => {
+    try { return localStorage.getItem('deck-stage.railVisible') !== '0'; } catch (e) { return true; }
+  });
+  const toggleRail = (on) => {
+    setRailVisible(on);
+    window.postMessage({ type: '__deck_rail_visible', on }, '*');
+  };
+  const offsetRef = React.useRef({ x: 16, y: 16 });
+  const PAD = 16;
+
+  const clampToViewport = React.useCallback(() => {
+    const panel = dragRef.current;
+    if (!panel) return;
+    const w = panel.offsetWidth, h = panel.offsetHeight;
+    const maxRight = Math.max(PAD, window.innerWidth - w - PAD);
+    const maxBottom = Math.max(PAD, window.innerHeight - h - PAD);
+    offsetRef.current = {
+      x: Math.min(maxRight, Math.max(PAD, offsetRef.current.x)),
+      y: Math.min(maxBottom, Math.max(PAD, offsetRef.current.y)),
+    };
+    panel.style.right = offsetRef.current.x + 'px';
+    panel.style.bottom = offsetRef.current.y + 'px';
+  }, []);
+
+  React.useEffect(() => {
+    if (!open) return;
+    clampToViewport();
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', clampToViewport);
+      return () => window.removeEventListener('resize', clampToViewport);
+    }
+    const ro = new ResizeObserver(clampToViewport);
+    ro.observe(document.documentElement);
+    return () => ro.disconnect();
+  }, [open, clampToViewport]);
+
+  React.useEffect(() => {
+    const onMsg = (e) => {
+      const t = e?.data?.type;
+      if (t === '__activate_edit_mode') setOpen(true);
+      else if (t === '__deactivate_edit_mode') setOpen(false);
+    };
+    window.addEventListener('message', onMsg);
+    window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+    return () => window.removeEventListener('message', onMsg);
+  }, []);
+
+  const dismiss = () => {
+    setOpen(false);
+    window.parent.postMessage({ type: '__edit_mode_dismissed' }, '*');
+  };
+
+  const onDragStart = (e) => {
+    const panel = dragRef.current;
+    if (!panel) return;
+    const r = panel.getBoundingClientRect();
+    const sx = e.clientX, sy = e.clientY;
+    const startRight = window.innerWidth - r.right;
+    const startBottom = window.innerHeight - r.bottom;
+    const move = (ev) => {
+      offsetRef.current = {
+        x: startRight - (ev.clientX - sx),
+        y: startBottom - (ev.clientY - sy),
+      };
+      clampToViewport();
+    };
+    const up = () => {
+      window.removeEventListener('mousemove', move);
+      window.removeEventListener('mouseup', up);
+    };
+    window.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', up);
+  };
+
+  if (!open) return null;
+  return (
+    <>
+      <style>{__TWEAKS_STYLE}</style>
+      <div ref={dragRef} className="twk-panel" data-noncommentable=""
+           style={{ right: offsetRef.current.x, bottom: offsetRef.current.y }}>
+        <div className="twk-hd" onMouseDown={onDragStart}>
+          <b>{title}</b>
+          <button className="twk-x" aria-label="Close tweaks"
+                  onMouseDown={(e) => e.stopPropagation()}
+                  onClick={dismiss}>✕</button>
+        </div>
+        <div className="twk-body">
+          {children}
+          {hasDeckStage && railEnabled && !noDeckControls && (
+            <TweakSection label="Deck">
+              <TweakToggle label="Thumbnail rail" value={railVisible} onChange={toggleRail} />
+            </TweakSection>
+          )}
+        </div>
+      </div>
+    </>
+  );
+}
+
+// ── Layout helpers ──────────────────────────────────────────────────────────
+
+function TweakSection({ label, children }) {
+  return (
+    <>
+      <div className="twk-sect">{label}</div>
+      {children}
+    </>
+  );
+}
+
+function TweakRow({ label, value, children, inline = false }) {
+  return (
+    <div className={inline ? 'twk-row twk-row-h' : 'twk-row'}>
+      <div className="twk-lbl">
+        <span>{label}</span>
+        {value != null && <span className="twk-val">{value}</span>}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+// ── Controls ────────────────────────────────────────────────────────────────
+
+function TweakSlider({ label, value, min = 0, max = 100, step = 1, unit = '', onChange }) {
+  return (
+    <TweakRow label={label} value={`${value}${unit}`}>
+      <input type="range" className="twk-slider" min={min} max={max} step={step}
+             value={value} onChange={(e) => onChange(Number(e.target.value))} />
+    </TweakRow>
+  );
+}
+
+function TweakToggle({ label, value, onChange }) {
+  return (
+    <div className="twk-row twk-row-h">
+      <div className="twk-lbl"><span>{label}</span></div>
+      <button type="button" className="twk-toggle" data-on={value ? '1' : '0'}
+              role="switch" aria-checked={!!value}
+              onClick={() => onChange(!value)}><i /></button>
+    </div>
+  );
+}
+
+function TweakRadio({ label, value, options, onChange }) {
+  const trackRef = React.useRef(null);
+  const [dragging, setDragging] = React.useState(false);
+  // The active value is read by pointer-move handlers attached for the lifetime
+  // of a drag — ref it so a stale closure doesn't fire onChange for every move.
+  const valueRef = React.useRef(value);
+  valueRef.current = value;
+
+  // Segments wrap mid-word once per-segment width runs out. The track is
+  // ~248px (280 panel − 28 body pad − 4 seg pad), each button loses 12px
+  // to its own padding, and 11.5px system-ui averages ~6.3px/char — so 2
+  // options fit ~16 chars each, 3 fit ~10. Past that (or >3 options), fall
+  // back to a dropdown rather than wrap.
+  const labelLen = (o) => String(typeof o === 'object' ? o.label : o).length;
+  const maxLen = options.reduce((m, o) => Math.max(m, labelLen(o)), 0);
+  const fitsAsSegments = maxLen <= ({ 2: 16, 3: 10 }[options.length] ?? 0);
+  if (!fitsAsSegments) {
+    // <select> emits strings — map back to the original option value so the
+    // fallback stays type-preserving (numbers, booleans) like the segment path.
+    const resolve = (s) => {
+      const m = options.find((o) => String(typeof o === 'object' ? o.value : o) === s);
+      return m === undefined ? s : typeof m === 'object' ? m.value : m;
+    };
+    return <TweakSelect label={label} value={value} options={options}
+                        onChange={(s) => onChange(resolve(s))} />;
+  }
+  const opts = options.map((o) => (typeof o === 'object' ? o : { value: o, label: o }));
+  const idx = Math.max(0, opts.findIndex((o) => o.value === value));
+  const n = opts.length;
+
+  const segAt = (clientX) => {
+    const r = trackRef.current.getBoundingClientRect();
+    const inner = r.width - 4;
+    const i = Math.floor(((clientX - r.left - 2) / inner) * n);
+    return opts[Math.max(0, Math.min(n - 1, i))].value;
+  };
+
+  const onPointerDown = (e) => {
+    setDragging(true);
+    const v0 = segAt(e.clientX);
+    if (v0 !== valueRef.current) onChange(v0);
+    const move = (ev) => {
+      if (!trackRef.current) return;
+      const v = segAt(ev.clientX);
+      if (v !== valueRef.current) onChange(v);
+    };
+    const up = () => {
+      setDragging(false);
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+  };
+
+  return (
+    <TweakRow label={label}>
+      <div ref={trackRef} role="radiogroup" onPointerDown={onPointerDown}
+           className={dragging ? 'twk-seg dragging' : 'twk-seg'}>
+        <div className="twk-seg-thumb"
+             style={{ left: `calc(2px + ${idx} * (100% - 4px) / ${n})`,
+                      width: `calc((100% - 4px) / ${n})` }} />
+        {opts.map((o) => (
+          <button key={o.value} type="button" role="radio" aria-checked={o.value === value}>
+            {o.label}
+          </button>
+        ))}
+      </div>
+    </TweakRow>
+  );
+}
+
+function TweakSelect({ label, value, options, onChange }) {
+  return (
+    <TweakRow label={label}>
+      <select className="twk-field" value={value} onChange={(e) => onChange(e.target.value)}>
+        {options.map((o) => {
+          const v = typeof o === 'object' ? o.value : o;
+          const l = typeof o === 'object' ? o.label : o;
+          return <option key={v} value={v}>{l}</option>;
+        })}
+      </select>
+    </TweakRow>
+  );
+}
+
+function TweakText({ label, value, placeholder, onChange }) {
+  return (
+    <TweakRow label={label}>
+      <input className="twk-field" type="text" value={value} placeholder={placeholder}
+             onChange={(e) => onChange(e.target.value)} />
+    </TweakRow>
+  );
+}
+
+function TweakNumber({ label, value, min, max, step = 1, unit = '', onChange }) {
+  const clamp = (n) => {
+    if (min != null && n < min) return min;
+    if (max != null && n > max) return max;
+    return n;
+  };
+  const startRef = React.useRef({ x: 0, val: 0 });
+  const onScrubStart = (e) => {
+    e.preventDefault();
+    startRef.current = { x: e.clientX, val: value };
+    const decimals = (String(step).split('.')[1] || '').length;
+    const move = (ev) => {
+      const dx = ev.clientX - startRef.current.x;
+      const raw = startRef.current.val + dx * step;
+      const snapped = Math.round(raw / step) * step;
+      onChange(clamp(Number(snapped.toFixed(decimals))));
+    };
+    const up = () => {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+  };
+  return (
+    <div className="twk-num">
+      <span className="twk-num-lbl" onPointerDown={onScrubStart}>{label}</span>
+      <input type="number" value={value} min={min} max={max} step={step}
+             onChange={(e) => onChange(clamp(Number(e.target.value)))} />
+      {unit && <span className="twk-num-unit">{unit}</span>}
+    </div>
+  );
+}
+
+// Relative-luminance contrast pick — checkmarks drawn over a swatch need to
+// read on both #111 and #fafafa without per-option configuration. Hex input
+// only (#rgb / #rrggbb); named or rgb()/hsl() colors fall through to "light".
+function __twkIsLight(hex) {
+  const h = String(hex).replace('#', '');
+  const x = h.length === 3 ? h.replace(/./g, (c) => c + c) : h.padEnd(6, '0');
+  const n = parseInt(x.slice(0, 6), 16);
+  if (Number.isNaN(n)) return true;
+  const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+  return r * 299 + g * 587 + b * 114 > 148000;
+}
+
+const __TwkCheck = ({ light }) => (
+  <svg viewBox="0 0 14 14" aria-hidden="true">
+    <path d="M3 7.2 5.8 10 11 4.2" fill="none" strokeWidth="2.2"
+          strokeLinecap="round" strokeLinejoin="round"
+          stroke={light ? 'rgba(0,0,0,.78)' : '#fff'} />
+  </svg>
+);
+
+// TweakColor — curated color/palette picker. Each option is either a single
+// hex string or an array of 1-5 hex strings; the card adapts — a lone color
+// renders solid, a palette renders colors[0] as the hero (left ~2/3) with the
+// rest stacked in a sharp column on the right. onChange emits the
+// option in the shape it was passed (string stays string, array stays array).
+// Without options it falls back to the native color input for back-compat.
+function TweakColor({ label, value, options, onChange }) {
+  if (!options || !options.length) {
+    return (
+      <div className="twk-row twk-row-h">
+        <div className="twk-lbl"><span>{label}</span></div>
+        <input type="color" className="twk-swatch" value={value}
+               onChange={(e) => onChange(e.target.value)} />
+      </div>
+    );
+  }
+  // Native <input type=color> emits lowercase hex per the HTML spec, so
+  // compare case-insensitively. String() guards JSON.stringify(undefined),
+  // which returns the primitive undefined (no .toLowerCase).
+  const key = (o) => String(JSON.stringify(o)).toLowerCase();
+  const cur = key(value);
+  return (
+    <TweakRow label={label}>
+      <div className="twk-chips" role="radiogroup">
+        {options.map((o, i) => {
+          const colors = Array.isArray(o) ? o : [o];
+          const [hero, ...rest] = colors;
+          const sup = rest.slice(0, 4);
+          const on = key(o) === cur;
+          return (
+            <button key={i} type="button" className="twk-chip" role="radio"
+                    aria-checked={on} data-on={on ? '1' : '0'}
+                    aria-label={colors.join(', ')} title={colors.join(' · ')}
+                    style={{ background: hero }}
+                    onClick={() => onChange(o)}>
+              {sup.length > 0 && (
+                <span>
+                  {sup.map((c, j) => <i key={j} style={{ background: c }} />)}
+                </span>
+              )}
+              {on && <__TwkCheck light={__twkIsLight(hero)} />}
+            </button>
+          );
+        })}
+      </div>
+    </TweakRow>
+  );
+}
+
+function TweakButton({ label, onClick, secondary = false }) {
+  return (
+    <button type="button" className={secondary ? 'twk-btn secondary' : 'twk-btn'}
+            onClick={onClick}>{label}</button>
+  );
+}
+
+Object.assign(window, {
+  useTweaks, TweaksPanel, TweakSection, TweakRow,
+  TweakSlider, TweakToggle, TweakRadio, TweakSelect,
+  TweakText, TweakNumber, TweakColor, TweakButton,
+});
+  </script>
+
+  <script type="text/babel" data-source="data.jsx">
+// ============================================================
+// Data + bilingual (EN / UK) content for the journal.
+// L(field, lang) returns the right string; plain strings pass through.
+// ============================================================
+
+const ARTIST = {
+  name:  { en: "Anya Volkov", uk: "Аня Волкова" },
+  city:  { en: "Tbilisi",     uk: "Тбілісі" },
+  year: 2026,
+  email: "studio@anyavolkov.work",
+  commissions: "commissions@anyavolkov.work",
+  press: "press@anyavolkov.work",
+};
+
+// --- Tag vocabulary (medium / format) used for Index filtering ---
+const TAGS = {
+  Traditional: { en: "Traditional", uk: "Традиційна" },
+  Digital:     { en: "Digital",     uk: "Діджитал" },
+  Editorial:   { en: "Editorial",   uk: "Редакційна" },
+  Poster:      { en: "Poster",      uk: "Постери" },
+  Book:        { en: "Book",        uk: "Книги" },
+};
+const TAG_ORDER = ["Traditional", "Digital", "Editorial", "Poster", "Book"];
+
+// --- Works (the Index) ---
+const WORKS = [
+  { id: 1,  num: "01", title: { en: "A Letter to the Garden",       uk: "Лист до саду" },              client: "The New York Times",   year: 2025, plate: 1, tags: ["Traditional", "Editorial"] },
+  { id: 2,  num: "02", title: { en: "Slow Burn",                    uk: "Повільне горіння" },          client: "The Atlantic",         year: 2025, plate: 2, tags: ["Traditional", "Editorial"] },
+  { id: 3,  num: "03", title: { en: "Notes from a Northern Spring", uk: "Нотатки північної весни" },   client: "Penguin Press",        year: 2024, plate: 3, tags: ["Traditional", "Book"] },
+  { id: 4,  num: "04", title: { en: "The Algorithm Forgets",        uk: "Алгоритм забуває" },          client: "Wired",                year: 2024, plate: 4, tags: ["Digital", "Editorial"] },
+  { id: 5,  num: "05", title: { en: "Tbilisi Film Festival",        uk: "Тбіліський кінофестиваль" },  client: "TIFF",                 year: 2024, plate: 1, tags: ["Digital", "Poster"] },
+  { id: 6,  num: "06", title: { en: "Mothers, Daughters",           uk: "Матері, доньки" },            client: "The Guardian Weekly",  year: 2024, plate: 2, tags: ["Traditional", "Editorial"] },
+  { id: 7,  num: "07", title: { en: "Granta 168: The Slow Lane",    uk: "Granta 168: Повільна смуга" },client: "Granta",               year: 2023, plate: 3, tags: ["Traditional", "Book"] },
+  { id: 8,  num: "08", title: { en: "A Year of Sundays",            uk: "Рік неділь" },                client: "Self-published",       year: 2023, plate: 4, tags: ["Traditional", "Poster"] },
+  { id: 9,  num: "09", title: { en: "On Patience",                  uk: "Про терпіння" },              client: "The Paris Review",     year: 2023, plate: 1, tags: ["Traditional", "Editorial"] },
+  { id: 10, num: "10", title: { en: "Pirosmani Reissue",            uk: "Піросмані. Перевидання" },    client: "Sulakauri Publishing", year: 2023, plate: 2, tags: ["Digital", "Book"] },
+  { id: 11, num: "11", title: { en: "The Long Walk Home",           uk: "Довга дорога додому" },       client: "Faber & Faber",        year: 2022, plate: 3, tags: ["Traditional", "Book"] },
+  { id: 12, num: "12", title: { en: "Inheritance",                  uk: "Спадок" },                    client: "Harper's Magazine",    year: 2022, plate: 4, tags: ["Digital", "Editorial"] },
+];
+
+// --- Project article (short) — content is generic so any work can open it ---
+const PROJECT = {
+  subtitle: {
+    en: "A short series of plates for an essay on the patient labour of tending things you may never harvest.",
+    uk: "Коротка серія робіт до есею про терпляву працю — доглядати те, чого, можливо, ніколи не збереш.",
+  },
+  body: {
+    en: [
+      "The commission began, as most do, with a brief that was generous and slightly impossible — and a deadline that was neither.",
+      "I work slowly and on purpose. What survives the final edit is usually the quietest option: the one that leaves the reader something to finish.",
+    ],
+    uk: [
+      "Замовлення почалося, як майже всі, зі щедрого й трохи неможливого брифа — і дедлайну, що не був ані тим, ані іншим.",
+      "Я працюю повільно і свідомо. До фінального відбору зазвичай доживає найтихіший варіант — той, що лишає читачеві щось дозавершити.",
+    ],
+  },
+  pull: {
+    en: "What survives the edit is usually the quietest option.",
+    uk: "До фінального відбору доживає найтихіший варіант.",
+  },
+};
+
+// --- Letter from the artist (short) ---
+const LETTER = {
+  dek: {
+    en: "On working slowly, in a small room, in a year that wanted things faster.",
+    uk: "Про те, як працювати повільно, у маленькій кімнаті, у рік, що хотів усього швидше.",
+  },
+  paragraphs: {
+    en: [
+      "I trained as a printmaker, which is to say I trained to wait. A plate does not negotiate; it tells you, after the acid bath, whether you guessed right.",
+      "My studio is one room in a building from 1903 in Sololaki. I read in the mornings, cook in the evenings, and keep the middle of the day for drawing.",
+      "I think of an illustration as a small contract with a reader: I agree not to waste your attention; you agree to bring some of your own. If you are here looking for a collaborator, please write. I answer letters slowly, on purpose.",
+    ],
+    uk: [
+      "Я навчалася друкарській справі — тобто навчалася чекати. Друкарська форма не торгується: після кислотної ванни вона просто каже, чи ти вгадала.",
+      "Моя майстерня — одна кімната в будинку 1903 року в Сололакі. Зранку читаю, увечері готую, а середину дня лишаю для малювання.",
+      "Я думаю про ілюстрацію як про невелику угоду з читачем: я обіцяю не марнувати вашу увагу; ви обіцяєте додати трохи власної. Якщо ви тут у пошуку колаборації — напишіть. Я відповідаю на листи повільно і свідомо.",
+    ],
+  },
+};
+
+// ============================================================
+// UI strings
+// ============================================================
+const STR = {
+  en: {
+    journal: "An Illustrator's Journal",
+    nav: { home: "Cover", issue: "Index", project: "Project", letter: "Letter", masthead: "Masthead" },
+    folio: "№ 01 · 2026 · Tbilisi",
+    dayNight: { day: "Day", night: "Night" },
+
+    // Home
+    home_meta_l: "Illustrator & Printmaker",
+    home_meta_r: "Lviv · Printed on the open web",
+    home_statement_label: "— Artist's Statement —",
+    home_statement: "I draw <em>slowly</em>, mostly in gouache, sometimes in pencil, occasionally on a screen — for editors, publishers, and anyone still in the business of holding a reader's attention for longer than a glance.",
+    home_fig: "Cover plate · A Letter to the Garden · 2025",
+    fig_lead: "Fig. 1 — ",
+    home_cover_note: "The Cover, March 2025",
+    read_project: "Read the full project →",
+    home_avail_label: "— Currently —",
+    home_avail: "Open for new commissions from June 2026 onward.",
+    home_reach_label: "— Get in touch —",
+    home_follow_label: "— Follow —",
+    home_social: [
+      ["Instagram", "@anya.volkov", "https://instagram.com"],
+      ["Are.na", "anya-volkov", "https://are.na"],
+    ],
+    home_copyright: "© Anya Volkov · 2026",
+    home_place: "Lviv · Printed on the open web",
+
+    // Issue
+    issue_meta_l: "Section II · The Index · Twelve works",
+    issue_meta_r: "Filter by medium · Listed without hierarchy",
+    issue_title: "The <em>Index</em>",
+    issue_dek: "A complete list of commissioned & personal work — 2022 through 2025.",
+    filter_all: "All",
+    filter_label: "Filter —",
+    showing: "Showing",
+    of: "of",
+    works_word: "works",
+    page_of: "Page 2 of 5 — The Index",
+    pag_cover: "← Cover",
+    pag_project: "Project →",
+
+    // Project
+    proj_section: "Section III · A Project",
+    tomb_title: "— Tombstone —",
+    tomb: { client: "Client", year: "Year", medium: "Medium", section: "Section" },
+    medium_trad: "Gouache & graphite on Arches paper",
+    medium_digi: "Digital · Procreate & risograph proof",
+    setin_label: "— Set in —",
+    setin_body: "Fraunces 144 (display)<br/>Bricolage Grotesque (subhead)<br/>Source Serif 4 (body)",
+    fig1_cap: "Gouache & graphite on paper. The plate chosen for the opening spread.",
+    fig4_cap: "A second plate — quieter, and the one that took the longest.",
+    byline: "— A.V., Sololaki",
+    back_index: "← Back to the Index",
+    continue: "Continue —",
+    cont_letter: "A Letter from the Artist →",
+
+    // Letter
+    letter_section: "Section IV · Editorial · From the Studio",
+    letter_place: "Sololaki, Tbilisi · Spring, 2026",
+    letter_title: "A <em>Letter</em>.",
+    letter_sign: "— Anya Volkov, Tbilisi, 2026",
+    pag_project_back: "← The Project",
+    pag_masthead: "Masthead →",
+
+    // Masthead
+    mast_section: "Section V · Imprint · Correspondence",
+    page5: "Page 5 of 5",
+    mast_title: "<em>Mast</em>head",
+    mast_dek: "The people, the addresses, the typefaces.",
+    studio_label: "— The Studio —",
+    roles: [
+      ["Illustrator / Founder", "Anya Volkov", "studio@anyavolkov.work"],
+      ["Commissions & Editorial", "All enquiries", "commissions@anyavolkov.work"],
+      ["Press & Interviews", "Words about pictures", "press@anyavolkov.work"],
+      ["Studio Assistant", "Lia Khatchaturian", "lia@anyavolkov.work"],
+      ["Representation", "Currently self-represented", "—"],
+    ],
+    dist_label: "— Distribution —",
+    dist: [
+      ["Instagram", "@anya.volkov", "https://instagram.com"],
+      ["Are.na", "anya-volkov", "https://are.na"],
+      ["It's Nice That", "Profile", "https://itsnicethat.com"],
+      ["Newsletter", "Quarterly, by post and by email", "#"],
+      ["Print shop", "Limited risograph editions", "#"],
+    ],
+    type_label: "— A Note on the Type —",
+    type_body: "Set in <em>Fraunces</em> for display, <em>Bricolage Grotesque</em> for subheads, and <em>Source Serif 4</em> for the body. Numerals are <em>JetBrains Mono</em>. The accent is a typographical red, RGB 221 · 54 · 36.",
+    colophon_l: "Set in Fraunces & Söhne. Printed on the open web, Tbilisi, 2026.",
+    colophon_r: "© Anya Volkov · Reproduction by permission only.",
+    return_cover: "← Return to the Cover",
+  },
+
+  uk: {
+    journal: "Журнал ілюстраторки",
+    nav: { home: "Обкладинка", issue: "Зміст", project: "Робота", letter: "Лист", masthead: "Імпринт" },
+    folio: "№ 01 · 2026 · Тбілісі",
+    dayNight: { day: "День", night: "Ніч" },
+
+    // Home
+    home_meta_l: "Ілюстраторка та друкарка",
+    home_meta_r: "Львів · Надруковано у відкритому вебі",
+    home_statement_label: "— Художня заява —",
+    home_statement: "Я малюю <em>повільно</em> — переважно гуашшю, інколи олівцем, подеколи на екрані — для редакцій, видавців і всіх, хто ще займається тим, щоб утримати увагу читача довше за один погляд.",
+    home_fig: "Обкладинка · «Лист до саду» · 2025",
+    fig_lead: "Іл. 1 — ",
+    home_cover_note: "Обкладинка, березень 2025",
+    read_project: "Читати про роботу →",
+    home_avail_label: "— Зараз —",
+    home_avail: "Відкрита до нових замовлень з червня 2026 року.",
+    home_reach_label: "— Зв'язок —",
+    home_follow_label: "— Слідкувати —",
+    home_social: [
+      ["Instagram", "@anya.volkov", "https://instagram.com"],
+      ["Are.na", "anya-volkov", "https://are.na"],
+    ],
+    home_copyright: "© Аня Волкова · 2026",
+    home_place: "Львів · Надруковано у відкритому вебі",
+
+    // Issue
+    issue_meta_l: "Розділ II · Зміст · Дванадцять робіт",
+    issue_meta_r: "Фільтр за технікою · Перелік без ієрархії",
+    issue_title: "<em>Зміст</em>",
+    issue_dek: "Повний перелік замовлених і особистих робіт — 2022–2025.",
+    filter_all: "Усі",
+    filter_label: "Фільтр —",
+    showing: "Показано",
+    of: "із",
+    works_word: "робіт",
+    page_of: "Сторінка 2 з 5 — Зміст",
+    pag_cover: "← Обкладинка",
+    pag_project: "Робота →",
+
+    // Project
+    proj_section: "Розділ III · Робота",
+    tomb_title: "— Реквізити —",
+    tomb: { client: "Замовник", year: "Рік", medium: "Техніка", section: "Розділ" },
+    medium_trad: "Гуаш і графіт на папері Arches",
+    medium_digi: "Діджитал · Procreate і ризограф-проба",
+    setin_label: "— Набрано шрифтами —",
+    setin_body: "Fraunces 144 (заголовки)<br/>Bricolage Grotesque (підзаголовки)<br/>Source Serif 4 (текст)",
+    fig1_cap: "Гуаш і графіт на папері. Робота, обрана для відкриваючого розвороту.",
+    fig4_cap: "Друга робота — тихіша, і та, що забрала найбільше часу.",
+    byline: "— А.В., Сололакі",
+    back_index: "← Назад до Змісту",
+    continue: "Далі —",
+    cont_letter: "Лист від художниці →",
+
+    // Letter
+    letter_section: "Розділ IV · Редакційна колонка · З майстерні",
+    letter_place: "Сололакі, Тбілісі · Весна, 2026",
+    letter_title: "<em>Лист</em>.",
+    letter_sign: "— Аня Волкова, Тбілісі, 2026",
+    pag_project_back: "← Робота",
+    pag_masthead: "Імпринт →",
+
+    // Masthead
+    mast_section: "Розділ V · Імпринт · Листування",
+    page5: "Сторінка 5 з 5",
+    mast_title: "<em>Ім</em>принт",
+    mast_dek: "Люди, адреси, шрифти.",
+    studio_label: "— Майстерня —",
+    roles: [
+      ["Ілюстраторка / Засновниця", "Аня Волкова", "studio@anyavolkov.work"],
+      ["Замовлення та редакції", "Усі запити", "commissions@anyavolkov.work"],
+      ["Преса та інтерв'ю", "Слова про малюнки", "press@anyavolkov.work"],
+      ["Асистентка майстерні", "Лія Хачатурян", "lia@anyavolkov.work"],
+      ["Представництво", "Наразі без агента", "—"],
+    ],
+    dist_label: "— Поширення —",
+    dist: [
+      ["Instagram", "@anya.volkov", "https://instagram.com"],
+      ["Are.na", "anya-volkov", "https://are.na"],
+      ["It's Nice That", "Профіль", "https://itsnicethat.com"],
+      ["Розсилка", "Щокварталу, поштою та електронкою", "#"],
+      ["Друкарня", "Обмежені ризограф-видання", "#"],
+    ],
+    type_label: "— Про шрифт —",
+    type_body: "Набрано <em>Fraunces</em> для заголовків, <em>Bricolage Grotesque</em> для підзаголовків і <em>Source Serif 4</em> для основного тексту. Цифри — <em>JetBrains Mono</em>. Акцент — типографський червоний, RGB 221 · 54 · 36.",
+    colophon_l: "Набрано Fraunces і Söhne. Надруковано у відкритому вебі, Тбілісі, 2026.",
+    colophon_r: "© Аня Волкова · Відтворення лише з дозволу.",
+    return_cover: "← Повернутися до обкладинки",
+  },
+};
+
+function L(field, lang) {
+  if (field && typeof field === "object" && !Array.isArray(field)) return field[lang] ?? field.en;
+  return field;
+}
+
+Object.assign(window, { ARTIST, TAGS, TAG_ORDER, WORKS, PROJECT, LETTER, STR, L });
+  </script>
+
+  <script type="text/babel" data-source="pages.jsx">
+// ============================================================
+// Pages — Home, Issue, Project, Letter, Masthead
+// Each receives { go, lang, work }. t = STR[lang]; L() picks language.
+// ============================================================
+
+const { useState, useEffect, useRef, useMemo } = React;
+
+function useReveal(dep) {
+  useEffect(() => {
+    const motionOK = !window.matchMedia || !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (motionOK) document.body.classList.add("reveal-ready");
+    let timers = [];
+    function check() {
+      const vh = window.innerHeight || document.documentElement.clientHeight;
+      const els = document.querySelectorAll(".reveal:not(.is-in)");
+      els.forEach((el) => {
+        const r = el.getBoundingClientRect();
+        if (r.top < vh * 0.94 && r.bottom > -40) el.classList.add("is-in");
+      });
+    }
+    // Multiple passes via setTimeout (fires even when rAF/IO are suppressed
+    // in a backgrounded preview document).
+    [0, 60, 160, 360].forEach((ms) => timers.push(setTimeout(check, ms)));
+    window.addEventListener("scroll", check, { passive: true });
+    window.addEventListener("resize", check, { passive: true });
+    return () => {
+      timers.forEach(clearTimeout);
+      window.removeEventListener("scroll", check);
+      window.removeEventListener("resize", check);
+    };
+  }, [dep]);
+}
+
+function Plate({ variant = 1, label = "", style, className = "" }) {
+  return (
+    <div className={`plate v-${variant} ${className}`} style={style}>
+      {label ? <span className="label">{label}</span> : null}
+    </div>
+  );
+}
+
+// Small helper for HTML-bearing strings
+function Html({ tag = "span", html, ...rest }) {
+  return React.createElement(tag, { dangerouslySetInnerHTML: { __html: html }, ...rest });
+}
+
+// ============================================================
+// HOME
+// ============================================================
+function HomePage({ go, lang }) {
+  useReveal(lang);
+  const t = STR[lang];
+  return (
+    <div className="view">
+      <div className="page" style={{ paddingTop: 36, paddingBottom: 100 }}>
+        <div className="grid-12 reveal" style={{ alignItems: "baseline", paddingBottom: 18, borderBottom: "1px solid var(--ink)" }}>
+          <div style={{ gridColumn: "1 / span 6" }} className="mono">{t.home_meta_l}</div>
+          <div style={{ gridColumn: "7 / span 6", textAlign: "right" }} className="mono">{t.home_meta_r}</div>
+        </div>
+
+        <h1 className="display reveal" style={{ fontSize: 168, margin: "28px 0 48px", letterSpacing: "-0.025em", lineHeight: 1.0 }}>
+          {lang === "uk" ? <span>Аня <span style={{ fontStyle: "italic" }}>Волкова</span></span>
+                         : <span>Anya <span style={{ fontStyle: "italic" }}>Volkov</span></span>}
+        </h1>
+
+        <hr className="hrule thick reveal from-right" style={{ marginBottom: 8 }} />
+
+        <div className="grid-12" style={{ marginTop: 56 }}>
+          <div className="reveal" style={{ gridColumn: "1 / span 5" }}>
+            <div className="mono" style={{ marginBottom: 24, opacity: 0.7 }}>{t.home_statement_label}</div>
+            <Html
+              tag="p"
+              html={t.home_statement}
+              className="display"
+              style={{ fontSize: 40, lineHeight: 1.18, letterSpacing: "-0.012em", margin: 0, fontVariationSettings: '"opsz" 144, "SOFT" 30, "wght" 380' }}
+            />
+          </div>
+
+          <div className="reveal from-right" style={{ gridColumn: "7 / span 6" }}>
+            <Plate variant={1} label={t.home_fig} style={{ width: "100%", aspectRatio: "4 / 5.2" }} />
+            <div style={{ display: "flex", justifyContent: "space-between", marginTop: 14, fontFamily: "var(--mono)", fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", opacity: 0.75, gap: 12, flexWrap: "wrap" }}>
+              <span><em style={{ fontStyle: "italic", fontFamily: "var(--body)", textTransform: "none", letterSpacing: 0, fontSize: 13 }}>{t.fig_lead}</em>{t.home_cover_note}</span>
+              <a className="e-link" data-cursor="Read" onClick={() => go("project", WORKS[0])}>{t.read_project}</a>
+            </div>
+          </div>
+        </div>
+
+        <footer className="reveal" style={{ marginTop: 110 }}>
+          <hr className="hrule thick" />
+          <div className="grid-12" style={{ paddingTop: 30, paddingBottom: 40 }}>
+            <div style={{ gridColumn: "1 / span 5", paddingRight: 24, borderRight: "1px solid var(--rule)" }}>
+              <div className="mono" style={{ opacity: 0.6, marginBottom: 12 }}>{t.home_avail_label}</div>
+              <p className="display" style={{ fontSize: 26, lineHeight: 1.22, margin: 0, fontVariationSettings: '"opsz" 144, "SOFT" 30, "wght" 380' }}>{t.home_avail}</p>
+            </div>
+            <div style={{ gridColumn: "7 / span 3" }}>
+              <div className="mono" style={{ opacity: 0.6, marginBottom: 14 }}>{t.home_reach_label}</div>
+              <a className="e-link" data-cursor="Mail" href={`mailto:${ARTIST.email}`} style={{ fontFamily: "var(--body)", fontSize: 17, fontStyle: "italic" }}>{ARTIST.email}</a>
+            </div>
+            <div style={{ gridColumn: "10 / span 3" }}>
+              <div className="mono" style={{ opacity: 0.6, marginBottom: 14 }}>{t.home_follow_label}</div>
+              <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 10 }}>
+                {t.home_social.map(([name, handle, url], i) => (
+                  <li key={i} style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12 }}>
+                    <span className="sub" style={{ fontSize: 11 }}>{name}</span>
+                    <a className="e-link" data-cursor="Visit" href={url} target="_blank" rel="noopener" style={{ fontFamily: "var(--body)", fontSize: 15, fontStyle: "italic" }}>{handle}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+          <hr className="hrule" />
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", paddingTop: 16, gap: 12, flexWrap: "wrap" }}>
+            <span className="mono" style={{ opacity: 0.7 }}>{t.home_copyright}</span>
+            <span className="mono" style={{ opacity: 0.7 }}>{t.home_place}</span>
+          </div>
+        </footer>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// ISSUE — table of contents w/ tag filter
+// ============================================================
+function IssuePage({ go, lang }) {
+  const t = STR[lang];
+  const [hovered, setHovered] = useState(null);
+  const [filter, setFilter] = useState("All");
+  useReveal(lang + filter);
+
+  const list = useMemo(
+    () => (filter === "All" ? WORKS : WORKS.filter((w) => w.tags.includes(filter))),
+    [filter]
+  );
+
+  return (
+    <div className="view">
+      <div className="page" style={{ paddingTop: 36, paddingBottom: 120 }}>
+        <div className="grid-12" style={{ alignItems: "baseline", paddingBottom: 16, borderBottom: "1px solid var(--ink)" }}>
+          <div className="mono" style={{ gridColumn: "1 / span 6" }}>{t.issue_meta_l}</div>
+          <div className="mono" style={{ gridColumn: "7 / span 6", textAlign: "right" }}>{t.issue_meta_r}</div>
+        </div>
+
+        <Html tag="h2" html={t.issue_title} className="display reveal" style={{ fontSize: 132, margin: "32px 0 10px", letterSpacing: "-0.022em", lineHeight: 0.92 }} />
+        <p className="reveal from-right sub" style={{ fontSize: 14, margin: "0 0 32px" }}>{t.issue_dek}</p>
+
+        {/* Tag filter — text links, accent for active */}
+        <div className="reveal" style={{ display: "flex", alignItems: "baseline", gap: 22, flexWrap: "wrap", paddingBottom: 22, borderBottom: "2px solid var(--ink)" }}>
+          <span className="mono" style={{ opacity: 0.6 }}>{t.filter_label}</span>
+          <a className={`e-link sub ${filter === "All" ? "is-active" : ""}`} style={{ fontSize: 13 }} onClick={() => setFilter("All")}>
+            {t.filter_all}
+          </a>
+          {TAG_ORDER.map((key) => (
+            <a key={key} className={`e-link sub ${filter === key ? "is-active" : ""}`} style={{ fontSize: 13 }} onClick={() => setFilter(key)}>
+              {L(TAGS[key], lang)}
+            </a>
+          ))}
+          <span className="mono" style={{ opacity: 0.5, marginLeft: "auto" }}>
+            {t.showing} {list.length} {t.of} {WORKS.length} {t.works_word}
+          </span>
+        </div>
+
+        <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
+          {list.map((w, i) => {
+            const isHover = hovered === w.id;
+            const dimmed = hovered !== null && !isHover;
+            return (
+              <li
+                key={w.id}
+                className="reveal"
+                onMouseEnter={() => setHovered(w.id)}
+                onMouseLeave={() => setHovered(null)}
+                onClick={() => go("project", w)}
+                data-cursor="View"
+                style={{ borderBottom: "1px solid var(--rule)", borderTop: i === 0 ? "1px solid var(--rule)" : "none", cursor: "pointer", transition: "transform 250ms ease, filter 280ms ease, opacity 280ms ease", transform: isHover ? "translateX(-8px)" : "translateX(0)", filter: dimmed ? "blur(2.5px)" : "blur(0)", opacity: dimmed ? 0.45 : 1 }}
+              >
+                <div className="grid-12" style={{ alignItems: "center", padding: "22px 0" }}>
+                  <div style={{ gridColumn: "1 / span 1", fontFamily: "var(--display)", fontSize: 36, fontVariationSettings: '"opsz" 144, "SOFT" 30, "wght" 400', color: isHover ? "var(--accent)" : "var(--ink)", transition: "color 250ms ease", letterSpacing: "-0.01em" }}>
+                    {w.num}<span style={{ opacity: 0.5 }}>—</span>
+                  </div>
+                  <div style={{ gridColumn: "2 / span 2" }} className="sub">{L(TAGS[w.tags[0]], lang)}</div>
+                  <div style={{ gridColumn: "4 / span 5", fontFamily: "var(--display)", fontSize: 28, fontVariationSettings: '"opsz" 144, "SOFT" 30, "wght" 400', letterSpacing: "-0.01em", lineHeight: 1.15 }}>
+                    {L(w.title, lang)}
+                    <span style={{ fontStyle: "italic", opacity: 0.55, fontSize: 18, marginLeft: 10 }}>— {w.client}</span>
+                  </div>
+                  <div style={{ gridColumn: "9 / span 1", textAlign: "right" }} className="mono">{w.year}</div>
+                  <div style={{ gridColumn: "10 / span 3", display: "flex", justifyContent: "flex-end" }}>
+                    <div style={{ width: 200, height: 130, transition: "transform 280ms ease", transform: isHover ? "scale(1.5) translateX(-30px)" : "scale(1)", transformOrigin: "right center", zIndex: isHover ? 5 : 1, position: "relative" }}>
+                      <Plate variant={w.plate} style={{ width: "100%", height: "100%" }} />
+                    </div>
+                  </div>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+
+        <div style={{ marginTop: 48, display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+          <div className="mono" style={{ opacity: 0.7 }}>{t.page_of}</div>
+          <div style={{ display: "flex", gap: 18, alignItems: "baseline" }}>
+            <a className="e-link sub" data-cursor="Open" style={{ fontSize: 11 }} onClick={() => go("home")}>{t.pag_cover}</a>
+            <span className="mono" style={{ color: "var(--accent)" }}>· 02 ·</span>
+            <a className="e-link sub" data-cursor="Read" style={{ fontSize: 11 }} onClick={() => go("project", list[0] || WORKS[0])}>{t.pag_project}</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// PROJECT — journal article (driven by the clicked work)
+// ============================================================
+function ProjectPage({ go, lang, work }) {
+  useReveal(lang);
+  const t = STR[lang];
+  const w = work || WORKS[0];
+  const isDigital = w.tags.includes("Digital");
+  const medium = isDigital ? t.medium_digi : t.medium_trad;
+
+  return (
+    <div className="view">
+      <div className="page" style={{ paddingTop: 36, paddingBottom: 120 }}>
+        <div className="grid-12" style={{ alignItems: "baseline", paddingBottom: 14, borderBottom: "1px solid var(--ink)" }}>
+          <div className="mono" style={{ gridColumn: "1 / span 6" }}>{t.proj_section} · {w.num} / 12</div>
+          <div className="mono" style={{ gridColumn: "7 / span 6", textAlign: "right" }}>{w.client} · {w.year}</div>
+        </div>
+
+        <div className="sub reveal" style={{ fontSize: 13, margin: "40px 0 14px", color: "var(--accent)" }}>
+          — {L(TAGS[w.tags[0]], lang)} —
+        </div>
+
+        <h2 className="display reveal" style={{ fontSize: 88, margin: 0, letterSpacing: "-0.022em", lineHeight: 0.98, maxWidth: "15ch" }}>
+          {L(w.title, lang)}
+        </h2>
+
+        <p className="sub reveal from-right" style={{ fontSize: 22, textTransform: "none", letterSpacing: "-0.005em", margin: "28px 0 56px", maxWidth: 720, opacity: 0.85, lineHeight: 1.35, fontStretch: "85%" }}>
+          {L(PROJECT.subtitle, lang)}
+        </p>
+
+        <div className="grid-12">
+          <aside style={{ gridColumn: "1 / span 3", paddingRight: 24, borderRight: "1px solid var(--rule)" }} className="reveal">
+            <div className="mono" style={{ marginBottom: 16, opacity: 0.7 }}>{t.tomb_title}</div>
+            <dl style={{ margin: 0 }}>
+              {[
+                [t.tomb.client, w.client, true],
+                [t.tomb.year, String(w.year), false],
+                [t.tomb.medium, medium, false],
+                [t.tomb.section, L(TAGS[w.tags[0]], lang), false],
+              ].map(([k, v, ital]) => (
+                <div key={k} style={{ marginBottom: 16 }}>
+                  <dt className="mono" style={{ opacity: 0.6, marginBottom: 4 }}>{k}</dt>
+                  <dd style={{ margin: 0, fontFamily: "var(--body)", fontSize: 15, fontStyle: ital ? "italic" : "normal" }}>{v}</dd>
+                </div>
+              ))}
+            </dl>
+
+            <div style={{ marginTop: 36 }}>
+              <div className="mono" style={{ marginBottom: 8, opacity: 0.6 }}>{t.setin_label}</div>
+              <Html tag="p" html={t.setin_body} style={{ margin: 0, fontFamily: "var(--body)", fontSize: 14, lineHeight: 1.5 }} />
+            </div>
+          </aside>
+
+          <div style={{ gridColumn: "5 / span 8", position: "relative" }} className="article-body reveal from-right">
+            <figure style={{ float: "right", width: "58%", margin: "8px 0 18px 28px", shapeOutside: "margin-box" }}>
+              <Plate variant={w.plate} style={{ width: "100%", aspectRatio: "5 / 4" }} />
+              <figcaption style={{ marginTop: 10, fontFamily: "var(--body)", fontStyle: "italic", fontSize: 12, opacity: 0.75, lineHeight: 1.5 }}>
+                <span className="mono" style={{ fontStyle: "normal", marginRight: 8 }}>{lang === "uk" ? "Іл. 1" : "Fig. 1"}</span>{t.fig1_cap}
+              </figcaption>
+            </figure>
+
+            <p className="dropcap">{L(PROJECT.body, lang)[0]}</p>
+
+            <blockquote style={{ margin: "36px 0 36px", padding: "24px 0", borderTop: "2px solid var(--ink)", borderBottom: "2px solid var(--ink)", clear: "left" }}>
+              <p className="display" style={{ fontSize: 38, margin: 0, textIndent: 0, lineHeight: 1.15, letterSpacing: "-0.012em", fontStyle: "italic", fontVariationSettings: '"opsz" 144, "SOFT" 40, "wght" 380' }}>
+                «{L(PROJECT.pull, lang)}»
+              </p>
+            </blockquote>
+
+            <figure style={{ float: "left", width: "44%", margin: "4px 28px 14px 0", shapeOutside: "margin-box" }}>
+              <Plate variant={((w.plate % 4) + 1)} style={{ width: "100%", aspectRatio: "4 / 5" }} />
+              <figcaption style={{ marginTop: 10, fontFamily: "var(--body)", fontStyle: "italic", fontSize: 12, opacity: 0.75, lineHeight: 1.5 }}>
+                <span className="mono" style={{ fontStyle: "normal", marginRight: 8 }}>{lang === "uk" ? "Іл. 2" : "Fig. 2"}</span>{t.fig4_cap}
+              </figcaption>
+            </figure>
+
+            <p>{L(PROJECT.body, lang)[1]}</p>
+
+            <div style={{ marginTop: 56, paddingTop: 24, borderTop: "1px solid var(--rule)", display: "flex", justifyContent: "space-between", alignItems: "baseline", clear: "both" }}>
+              <span className="mono" style={{ opacity: 0.7 }}>✦ ✦ ✦</span>
+              <span style={{ fontFamily: "var(--body)", fontStyle: "italic", fontSize: 14, opacity: 0.85 }}>{t.byline}, {w.year}</span>
+            </div>
+          </div>
+        </div>
+
+        <div style={{ marginTop: 80, display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 16, flexWrap: "wrap" }}>
+          <a className="e-link sub" data-cursor="Open" style={{ fontSize: 11 }} onClick={() => go("issue")}>{t.back_index}</a>
+          <div style={{ display: "flex", gap: 14, alignItems: "baseline" }}>
+            <span className="mono" style={{ opacity: 0.6 }}>{t.continue}</span>
+            <a className="e-link" data-cursor="Read" style={{ fontFamily: "var(--display)", fontSize: 22, fontStyle: "italic" }} onClick={() => go("letter")}>{t.cont_letter}</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// LETTER
+// ============================================================
+function LetterPage({ go, lang }) {
+  useReveal(lang);
+  const t = STR[lang];
+  const paras = L(LETTER.paragraphs, lang);
+  return (
+    <div className="view">
+      <div className="page" style={{ paddingTop: 36, paddingBottom: 120 }}>
+        <div className="grid-12" style={{ alignItems: "baseline", paddingBottom: 14, borderBottom: "1px solid var(--ink)" }}>
+          <div className="mono" style={{ gridColumn: "1 / span 6" }}>{t.letter_section}</div>
+          <div className="mono" style={{ gridColumn: "7 / span 6", textAlign: "right" }}>{t.letter_place}</div>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "120px 1fr", columnGap: 32, alignItems: "baseline", margin: "56px 0 28px" }} className="reveal">
+          <div className="display" style={{ fontSize: 92, color: "var(--accent)", lineHeight: 0.9, letterSpacing: "-0.02em" }}>— 04</div>
+          <Html tag="h2" html={t.letter_title} className="display" style={{ fontSize: 132, margin: 0, letterSpacing: "-0.025em", lineHeight: 0.9 }} />
+        </div>
+
+        <p className="sub reveal from-right" style={{ fontSize: 22, textTransform: "none", letterSpacing: "-0.005em", margin: "0 0 64px 152px", maxWidth: 640, opacity: 0.85, lineHeight: 1.35, fontStretch: "85%" }}>
+          {L(LETTER.dek, lang)}
+        </p>
+
+        <article className="article-body reveal" style={{ maxWidth: 580, marginLeft: 152 }}>
+          <p className="dropcap">{paras[0]}</p>
+          {paras.slice(1).map((p, i) => <p key={i}>{p}</p>)}
+          <p style={{ marginTop: 56, fontStyle: "italic", fontFamily: "var(--display)", fontSize: 22, textIndent: 0, fontVariationSettings: '"opsz" 144, "SOFT" 50, "wght" 380' }}>
+            {t.letter_sign}
+          </p>
+        </article>
+
+        <div style={{ marginTop: 100, display: "flex", justifyContent: "space-between", alignItems: "baseline", borderTop: "1px solid var(--rule)", paddingTop: 22 }}>
+          <a className="e-link sub" data-cursor="Read" style={{ fontSize: 11 }} onClick={() => go("project")}>{t.pag_project_back}</a>
+          <span className="mono" style={{ color: "var(--accent)" }}>· 04 ·</span>
+          <a className="e-link sub" data-cursor="Open" style={{ fontSize: 11 }} onClick={() => go("masthead")}>{t.pag_masthead}</a>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// MASTHEAD
+// ============================================================
+function MastheadPage({ go, lang }) {
+  useReveal(lang);
+  const t = STR[lang];
+  return (
+    <div className="view">
+      <div className="page" style={{ paddingTop: 36, paddingBottom: 120 }}>
+        <div className="grid-12" style={{ alignItems: "baseline", paddingBottom: 14, borderBottom: "1px solid var(--ink)" }}>
+          <div className="mono" style={{ gridColumn: "1 / span 6" }}>{t.mast_section}</div>
+          <div className="mono" style={{ gridColumn: "7 / span 6", textAlign: "right" }}>{t.page5}</div>
+        </div>
+
+        <Html tag="h2" html={t.mast_title} className="display reveal" style={{ fontSize: 152, margin: "32px 0 10px", letterSpacing: "-0.025em", lineHeight: 0.9 }} />
+        <p className="sub reveal from-right" style={{ fontSize: 14, margin: "0 0 80px", paddingBottom: 22, borderBottom: "2px solid var(--ink)" }}>{t.mast_dek}</p>
+
+        <div className="grid-12 reveal">
+          <div style={{ gridColumn: "1 / span 6", paddingRight: 32 }}>
+            <div className="mono" style={{ opacity: 0.6, marginBottom: 24 }}>{t.studio_label}</div>
+            {t.roles.map((row, i) => (
+              <div key={i} className="grid-12" style={{ alignItems: "baseline", padding: "18px 0", borderBottom: "1px solid var(--rule)", borderTop: i === 0 ? "1px solid var(--rule)" : "none", gap: 0 }}>
+                <div style={{ gridColumn: "1 / span 6", fontFamily: "var(--body)", fontSize: 15, fontStyle: "italic" }}>{row[0]}</div>
+                <div style={{ gridColumn: "7 / span 6", textAlign: "right" }}>
+                  <div style={{ fontFamily: "var(--display)", fontSize: 22, fontVariationSettings: '"opsz" 144, "SOFT" 30, "wght" 400', letterSpacing: "-0.01em", lineHeight: 1.2 }}>{row[1]}</div>
+                  {row[2] !== "—"
+                    ? <a className="e-link mono" data-cursor="Mail" href={`mailto:${row[2]}`} style={{ display: "inline-block", marginTop: 4 }}>{row[2]}</a>
+                    : <div className="mono" style={{ opacity: 0.5, marginTop: 4 }}>—</div>}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ gridColumn: "7 / span 6", paddingLeft: 32, borderLeft: "1px solid var(--rule)" }}>
+            <div className="mono" style={{ opacity: 0.6, marginBottom: 24 }}>{t.dist_label}</div>
+            <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+              {t.dist.map((row, i) => (
+                <li key={i} style={{ padding: "18px 0", borderBottom: "1px solid var(--rule)", borderTop: i === 0 ? "1px solid var(--rule)" : "none", display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 16 }}>
+                  <span style={{ fontFamily: "var(--display)", fontSize: 22, fontVariationSettings: '"opsz" 144, "SOFT" 30, "wght" 400', letterSpacing: "-0.01em" }}>{row[0]}</span>
+                  <a className="e-link" data-cursor="Visit" href={row[2]} target="_blank" style={{ fontFamily: "var(--body)", fontStyle: "italic", fontSize: 15, textAlign: "right" }}>{row[1]}</a>
+                </li>
+              ))}
+            </ul>
+
+            <div style={{ marginTop: 56 }}>
+              <div className="mono" style={{ opacity: 0.6, marginBottom: 16 }}>{t.type_label}</div>
+              <Html tag="p" html={t.type_body} style={{ fontFamily: "var(--body)", fontSize: 15, lineHeight: 1.62, margin: 0 }} />
+            </div>
+          </div>
+        </div>
+
+        <div className="footer-imprint">
+          <hr className="hrule ink" />
+          <div style={{ marginTop: 22, display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 24, flexWrap: "wrap" }}>
+            <div className="mono" style={{ opacity: 0.75 }}>{t.colophon_l}</div>
+            <div className="mono" style={{ opacity: 0.75 }}>{t.colophon_r}</div>
+          </div>
+          <div style={{ marginTop: 28, display: "flex", gap: 18, alignItems: "baseline" }}>
+            <a className="e-link sub" data-cursor="Home" style={{ fontSize: 11 }} onClick={() => go("home")}>{t.return_cover}</a>
+            <span className="mono" style={{ color: "var(--accent)" }}>· 05 ·</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+Object.assign(window, { HomePage, IssuePage, ProjectPage, LetterPage, MastheadPage, useReveal, Plate });
+  </script>
+
+  <script type="text/babel" data-source="app.jsx">
+// App shell: top nav (auto-hide on scroll), theme + language toggles,
+// page routing w/ work selection, fade transitions, Tweaks panel.
+
+const { useState: useStateApp, useEffect: useEffectApp, useRef: useRefApp } = React;
+
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "accent": "#DD3624",
+  "headingFont": "\"Playfair Display\", \"Old Standard TT\", Georgia, serif",
+  "showGrid": false
+}/*EDITMODE-END*/;
+
+const LS_THEME = "av_theme";
+const LS_LANG = "av_lang";
+
+function App() {
+  const [page, setPage] = useStateApp("home");
+  const [work, setWork] = useStateApp(WORKS[0]);
+  const [hideBar, setHideBar] = useStateApp(false);
+  const lastY = useRefApp(0);
+
+  const [theme, setTheme] = useStateApp(() => {
+    try { return localStorage.getItem(LS_THEME) || "light"; } catch (e) { return "light"; }
+  });
+  const [lang, setLang] = useStateApp(() => {
+    try { return localStorage.getItem(LS_LANG) || "en"; } catch (e) { return "en"; }
+  });
+
+  const [tweaks, setTweak] = window.useTweaks(TWEAK_DEFAULTS);
+
+  // Theme → data-theme attribute + persistence
+  useEffectApp(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    try { localStorage.setItem(LS_THEME, theme); } catch (e) {}
+  }, [theme]);
+
+  // Language → <html lang> + persistence
+  useEffectApp(() => {
+    document.documentElement.setAttribute("lang", lang === "uk" ? "uk" : "en");
+    try { localStorage.setItem(LS_LANG, lang); } catch (e) {}
+  }, [lang]);
+
+  // Tweaks → CSS vars
+  useEffectApp(() => {
+    document.documentElement.style.setProperty("--accent", tweaks.accent);
+    document.documentElement.style.setProperty("--display", tweaks.headingFont);
+    document.body.classList.toggle("grid-on", !!tweaks.showGrid);
+  }, [tweaks]);
+
+  // Hide bar on scroll down, show on scroll up
+  useEffectApp(() => {
+    function onScroll() {
+      const y = window.scrollY;
+      const dy = y - lastY.current;
+      if (Math.abs(dy) < 6) return;
+      if (dy > 0 && y > 120) setHideBar(true);
+      else setHideBar(false);
+      lastY.current = y;
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  function go(p, w) {
+    if (w) setWork(w);
+    const navigate = () => {
+      setPage(p);
+      window.scrollTo({ top: 0, behavior: "auto" });
+    };
+    if (p === page && !w) return;
+    if (document.startViewTransition) document.startViewTransition(navigate);
+    else navigate();
+  }
+
+  function switchTheme(next) {
+    setTheme(next);
+  }
+  function switchLang(next) {
+    setLang(next);
+  }
+
+  const t = STR[lang];
+
+  let PageComponent = HomePage;
+  if (page === "issue") PageComponent = IssuePage;
+  else if (page === "project") PageComponent = ProjectPage;
+  else if (page === "letter") PageComponent = LetterPage;
+  else if (page === "masthead") PageComponent = MastheadPage;
+
+  return (
+    <React.Fragment>
+      <header className={`topbar ${hideBar ? "hidden" : ""}`}>
+        <div className="topbar-inner">
+          <a className="brand" data-cursor="Home" onClick={() => go("home")}>
+            {lang === "uk" ? <span>Аня <span className="em">Волкова</span></span> : <span>Anya <span className="em">Volkov</span></span>}
+            <span style={{ fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.12em", marginLeft: 14, opacity: 0.6, textTransform: "uppercase" }}>
+              {t.journal}
+            </span>
+          </a>
+
+          <nav>
+            {["home", "issue", "project", "letter", "masthead"].map((k) => (
+              <a key={k} className={`e-link ${page === k ? "is-active" : ""}`} data-cursor="Open" onClick={() => go(k)}>
+                {t.nav[k]}
+              </a>
+            ))}
+          </nav>
+
+          <div className="meta-controls">
+            <span className="ctrl-group">
+              <a className={lang === "en" ? "on" : ""} onClick={() => switchLang("en")}>EN</a>
+              <span className="sep">·</span>
+              <a className={lang === "uk" ? "on" : ""} onClick={() => switchLang("uk")}>UA</a>
+            </span>
+            <span className="divider">/</span>
+            <span className="ctrl-group">
+              <a className={theme === "light" ? "on" : ""} onClick={() => switchTheme("light")}>{t.dayNight.day}</a>
+              <span className="sep">·</span>
+              <a className={theme === "dark" ? "on" : ""} onClick={() => switchTheme("dark")}>{t.dayNight.night}</a>
+            </span>
+          </div>
+        </div>
+      </header>
+
+      <main key={page + lang}>
+        <PageComponent go={go} lang={lang} work={work} />
+      </main>
+
+      <window.TweaksPanel title="Tweaks">
+        <window.TweakSection title="Reading">
+          <window.TweakRadio
+            label="Theme"
+            value={theme}
+            onChange={switchTheme}
+            options={[{ value: "light", label: "Day" }, { value: "dark", label: "Night" }]}
+          />
+          <window.TweakRadio
+            label="Language"
+            value={lang}
+            onChange={switchLang}
+            options={[{ value: "en", label: "English" }, { value: "uk", label: "Українська" }]}
+          />
+        </window.TweakSection>
+
+        <window.TweakSection title="Typography">
+          <window.TweakSelect
+            label="Headings"
+            value={tweaks.headingFont}
+            onChange={(v) => setTweak("headingFont", v)}
+            options={[
+              { value: '"Playfair Display", "Old Standard TT", Georgia, serif', label: "Playfair Display" },
+              { value: '"EB Garamond", Georgia, serif', label: "EB Garamond" },
+              { value: '"Old Standard TT", Georgia, serif', label: "Old Standard TT" },
+            ]}
+          />
+        </window.TweakSection>
+
+        <window.TweakSection title="Palette">
+          <window.TweakColor
+            label="Accent"
+            value={tweaks.accent}
+            onChange={(v) => setTweak("accent", v)}
+            options={["#DD3624", "#0F0F0F", "#1B3A8B", "#0B6A3B"]}
+          />
+        </window.TweakSection>
+
+        <window.TweakSection title="Layout">
+          <window.TweakToggle
+            label="Show 12-col grid"
+            value={tweaks.showGrid}
+            onChange={(v) => setTweak("showGrid", v)}
+          />
+        </window.TweakSection>
+
+        <window.TweakSection title="Navigate">
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
+            {["home", "issue", "project", "letter", "masthead"].map((k) => (
+              <window.TweakButton key={k} onClick={() => go(k)}>{t.nav[k]}</window.TweakButton>
+            ))}
+          </div>
+        </window.TweakSection>
+      </window.TweaksPanel>
+    </React.Fragment>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+
+  <script>
+  // Cinematic custom cursor — vanilla JS, event-delegated so it works with React-rendered nodes.
+  (function () {
+    var fine = window.matchMedia("(hover: hover)").matches && window.matchMedia("(min-width: 769px)").matches;
+    if (!fine) return;
+
+    var dot = document.createElement("div");
+    dot.className = "cursor-dot";
+    document.body.appendChild(dot);
+    document.body.classList.add("cursor-on");
+
+    var tx = window.innerWidth / 2, ty = window.innerHeight / 2;
+    var x = tx, y = ty, seen = false;
+
+    window.addEventListener("mousemove", function (e) {
+      tx = e.clientX; ty = e.clientY;
+      if (!seen) { seen = true; x = tx; y = ty; dot.classList.add("is-visible"); }
+    }, { passive: true });
+
+    document.addEventListener("mouseleave", function () { dot.classList.remove("is-visible"); });
+    document.addEventListener("mouseenter", function () { if (seen) dot.classList.add("is-visible"); });
+
+    document.addEventListener("mouseover", function (e) {
+      var hit = e.target.closest && e.target.closest("[data-cursor]");
+      if (hit) {
+        dot.setAttribute("data-label", hit.getAttribute("data-cursor") || "");
+        dot.classList.add("is-hover");
+      }
+    });
+    document.addEventListener("mouseout", function (e) {
+      var hit = e.target.closest && e.target.closest("[data-cursor]");
+      if (!hit) return;
+      var to = e.relatedTarget && e.relatedTarget.closest ? e.relatedTarget.closest("[data-cursor]") : null;
+      if (!to) dot.classList.remove("is-hover");
+    });
+
+    (function loop() {
+      x += (tx - x) * 0.22;
+      y += (ty - y) * 0.22;
+      dot.style.transform = "translate(" + x + "px," + y + "px)";
+      requestAnimationFrame(loop);
+    })();
+  })();
+  </script>
+</body>
+</html>
