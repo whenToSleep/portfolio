@@ -36,7 +36,7 @@ export function HomePage({ home, site }: { home: HomeContent; site: SiteSettings
 
         <h1
           className="display reveal"
-          style={{ fontSize: 168, margin: "28px 0 48px", letterSpacing: "-0.025em", lineHeight: 1.0 }}
+          style={{ fontSize: "clamp(3.5rem, 0.9rem + 10.67vw, 10.5rem)", margin: "28px 0 48px", letterSpacing: "-0.025em", lineHeight: 1.0 }}
         >
           <span>
             {firstNames} <span style={{ fontStyle: "italic" }}>{lastName}</span>
@@ -55,7 +55,7 @@ export function HomePage({ home, site }: { home: HomeContent; site: SiteSettings
               html={home.statement}
               className="display"
               style={{
-                fontSize: 40,
+                fontSize: "clamp(1.75rem, 1.4rem + 1.3vw, 2.5rem)",
                 lineHeight: 1.18,
                 letterSpacing: "-0.012em",
                 margin: 0,

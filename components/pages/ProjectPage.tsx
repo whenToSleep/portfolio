@@ -46,7 +46,7 @@ export function ProjectPage({ work }: { work: WorkCard }) {
 
         <h2
           className="display reveal"
-          style={{ fontSize: 88, margin: 0, letterSpacing: "-0.022em", lineHeight: 0.98, maxWidth: "15ch" }}
+          style={{ fontSize: "clamp(2.5rem, 1.39rem + 4.57vw, 5.5rem)", margin: 0, letterSpacing: "-0.022em", lineHeight: 0.98, maxWidth: "15ch" }}
         >
           {w.title}
         </h2>
@@ -132,7 +132,7 @@ export function ProjectPage({ work }: { work: WorkCard }) {
               <p
                 className="display"
                 style={{
-                  fontSize: 38,
+                  fontSize: "clamp(1.625rem, 1.35rem + 1.14vw, 2.375rem)",
                   margin: 0,
                   textIndent: 0,
                   lineHeight: 1.15,

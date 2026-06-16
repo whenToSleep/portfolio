@@ -30,7 +30,7 @@ export function MastheadPage({ masthead }: { masthead: MastheadContent }) {
           tag="h2"
           html={t.mast_title}
           className="display reveal"
-          style={{ fontSize: 152, margin: "32px 0 10px", letterSpacing: "-0.025em", lineHeight: 0.9 }}
+          style={{ fontSize: "clamp(3.25rem, 0.6rem + 10vw, 9.5rem)", margin: "32px 0 10px", letterSpacing: "-0.025em", lineHeight: 0.9 }}
         />
         <p
           className="sub reveal from-right"

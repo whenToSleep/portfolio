@@ -20,7 +20,12 @@ import { mkdirSync } from 'node:fs';
 
 const BASE = process.env.URL || 'http://localhost:3000';
 const PROTO = process.env.PROTO === '1';
+// MOBILE=1 captures a phone viewport (for the baseline-mobile/ reference) — the
+// desktop nav is a burger there, so we wait on the brand instead of nav links.
+const MOBILE = process.env.MOBILE === '1';
 const OUT = process.argv[2] || 'screenshots';
+const VIEWPORT = MOBILE ? { width: 390, height: 844 } : { width: 1440, height: 900 };
+const READY_SEL = MOBILE ? 'header.topbar .brand' : 'header.topbar nav a';
 mkdirSync(OUT, { recursive: true });
 
 // file slug + Next.js route. nav order is fixed: [home, issue, project, letter, masthead]
@@ -39,7 +44,7 @@ let count = 0;
 for (const lang of langs) {
   for (const [theme, themeFile] of themes) {
     const ctx = await browser.newContext({
-      viewport: { width: 1440, height: 900 },
+      viewport: VIEWPORT,
       deviceScaleFactor: 1,
       reducedMotion: 'reduce',
     });
@@ -67,7 +72,7 @@ for (const lang of langs) {
       for (const p of PAGES) {
         const path = p.path === '/' ? `/${lang}` : `/${lang}${p.path}`;
         await page.goto(BASE + path, { waitUntil: 'networkidle' });
-        await page.waitForSelector('header.topbar nav a', { timeout: 20000 });
+        await page.waitForSelector(READY_SEL, { timeout: 20000 });
         await page.waitForTimeout(800);
         const f = `${OUT}/${p.file}-${lang}-${themeFile}.png`;
         await page.screenshot({ path: f, fullPage: true });

@@ -30,14 +30,14 @@ export function LetterPage({ letter }: { letter: LetterContent }) {
           style={{ display: "grid", gridTemplateColumns: "120px 1fr", columnGap: 32, alignItems: "baseline", margin: "56px 0 28px" }}
           className="reveal"
         >
-          <div className="display" style={{ fontSize: 92, color: "var(--accent)", lineHeight: 0.9, letterSpacing: "-0.02em" }}>
+          <div className="display" style={{ fontSize: "clamp(2.75rem, 1.64rem + 4.57vw, 5.75rem)", color: "var(--accent)", lineHeight: 0.9, letterSpacing: "-0.02em" }}>
             — 04
           </div>
           <Html
             tag="h2"
             html={t.letter_title}
             className="display"
-            style={{ fontSize: 132, margin: 0, letterSpacing: "-0.025em", lineHeight: 0.9 }}
+            style={{ fontSize: "clamp(3rem, 1.05rem + 8vw, 8.25rem)", margin: 0, letterSpacing: "-0.025em", lineHeight: 0.9 }}
           />
         </div>
 

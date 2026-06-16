@@ -36,7 +36,7 @@ export function IssuePage({ works, tags }: { works: WorkCard[]; tags: TagItem[] 
 
         <h2
           className="display reveal"
-          style={{ fontSize: 132, margin: "32px 0 10px", letterSpacing: "-0.022em", lineHeight: 0.92 }}
+          style={{ fontSize: "clamp(3rem, 1.05rem + 8vw, 8.25rem)", margin: "32px 0 10px", letterSpacing: "-0.022em", lineHeight: 0.92 }}
           dangerouslySetInnerHTML={{ __html: t.issue_title }}
         />
         <p className="reveal from-right sub" style={{ fontSize: 14, margin: "0 0 32px" }}>
@@ -87,7 +87,7 @@ export function IssuePage({ works, tags }: { works: WorkCard[]; tags: TagItem[] 
             return (
               <li
                 key={w.id}
-                className="reveal"
+                className="reveal issue-row"
                 onMouseEnter={() => setHovered(w.id)}
                 onMouseLeave={() => setHovered(null)}
                 onClick={() => navigate(`/work/${w.slug}`)}
@@ -140,6 +140,7 @@ export function IssuePage({ works, tags }: { works: WorkCard[]; tags: TagItem[] 
                   </div>
                   <div style={{ gridColumn: "10 / span 3", display: "flex", justifyContent: "flex-end" }}>
                     <div
+                      className="issue-thumb"
                       style={{
                         width: 200,
                         height: 130,

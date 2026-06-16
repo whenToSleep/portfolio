@@ -292,16 +292,107 @@ body.reveal-ready .reveal.is-in {
   margin-right: 0.04em;
 }
 
-/* ---------- Mobile ---------- */
-@media (max-width: 820px) {
-  .page { padding: 0 22px; }
-  .topbar-inner { padding: 12px 22px; flex-wrap: wrap; gap: 12px; }
-  .topbar nav { gap: 18px; }
-}
-@media (max-width: 600px) {
-  .grid-12 { grid-template-columns: 1fr; }
-  .display { font-size: 48px !important; }
+/* ---------- Burger / mobile drawer (desktop = off) ---------- */
+.nav-toggle { display: none; }
+.mobile-menu,
+.mobile-menu-backdrop { display: none; }
+
+/* ---------- Mobile (<=768px). Desktop (>=769px) is untouched. ---------- */
+@media (max-width: 768px) {
+  .page { padding: 0 20px; }
+
+  /* Collapse the 12-col grid: one column, and force every inline grid-column
+     span to full width (otherwise inline `grid-column: 7 / span 6` makes
+     implicit columns and nothing stacks). */
+  .grid-12 { grid-template-columns: 1fr; column-gap: 0; row-gap: 28px; }
+  .grid-12 > * { grid-column: 1 / -1 !important; }
+
+  /* Article figures: no float, full width. */
+  .article-body figure { float: none !important; width: 100% !important; margin: 24px 0 !important; }
+  .dropcap::first-letter { font-size: 4.2em; }
+
+  /* Swap the desktop nav + controls for the burger. */
+  .topbar-inner { padding: 12px 20px; }
+  .topbar nav,
+  .topbar-inner .meta-controls { display: none; }
+  .nav-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    margin: -8px -8px -8px 0;
+    background: none;
+    border: 0;
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  /* Drawer + backdrop. */
+  .mobile-menu-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 280ms ease;
+    z-index: 100;
+  }
+  .mobile-menu-backdrop.show { opacity: 1; pointer-events: auto; }
+  .mobile-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100dvh;
+    width: min(80vw, 320px);
+    padding: 84px 28px 28px;
+    background: var(--paper);
+    border-left: 1px solid var(--ink);
+    transform: translateX(100%);
+    transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+    z-index: 101;
+    overflow-y: auto;
+  }
+  .mobile-menu.open { transform: translateX(0); }
+  .mobile-menu nav { display: flex; flex-direction: column; gap: 6px; }
+  .mobile-menu nav .e-link {
+    font-family: var(--display);
+    font-size: 30px;
+    letter-spacing: -0.01em;
+    padding: 8px 0;
+  }
+  .mobile-menu .menu-controls { margin-top: 28px; padding-top: 22px; border-top: 1px solid var(--rule); display: flex; flex-direction: column; gap: 18px; }
+  .mobile-menu .ctrl-group { display: flex; align-items: baseline; gap: 10px; font-family: var(--mono); font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; }
+  .mobile-menu .ctrl-group a { padding: 8px 4px; cursor: pointer; }
+  .mobile-menu .ctrl-group a.on { color: var(--accent); }
+  .mobile-menu .ctrl-group a:not(.on) { opacity: 0.55; }
+
+  /* IssuePage rows: stack instead of the 12-col strip. The row carries inline
+     alignItems:center + the thumb wrapper has justify-content:flex-end, so beat
+     both with !important to left-align and let children span full width. */
+  .issue-row .grid-12 { display: flex; flex-direction: column; align-items: stretch !important; gap: 4px; padding: 18px 0 !important; }
+  .issue-row .grid-12 > * { text-align: left !important; justify-content: flex-start !important; }
+  .issue-row .issue-thumb { width: 100% !important; height: auto !important; aspect-ratio: 16 / 10; transform: none !important; margin-top: 10px; }
+
   .hide-mobile { display: none; }
+}
+
+@media (max-width: 480px) {
+  .page { padding: 0 16px; }
+}
+
+/* Touch devices: neutralize the hover-only list animation (it fires on tap). */
+@media (hover: none) {
+  .issue-row { transform: none !important; filter: none !important; opacity: 1 !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mobile-menu { transition: none; }
+  .mobile-menu-backdrop { transition: none; }
 }
 
 /* Tweaks panel host accommodations */
