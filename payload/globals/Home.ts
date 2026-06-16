@@ -8,7 +8,9 @@ export const Home: GlobalConfig = {
   admin: {
     group: "Сторінки",
     description: "Тексти головної сторінки.",
+    preview: (_doc, { locale }) => `/${locale || "en"}`,
   },
+  versions: { drafts: true },
   access: {
     read: () => true,
   },

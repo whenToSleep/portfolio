@@ -7,7 +7,9 @@ export const Masthead: GlobalConfig = {
   admin: {
     group: "Сторінки",
     description: "Люди, адреси, шрифти.",
+    preview: (_doc, { locale }) => `/${locale || "en"}/masthead`,
   },
+  versions: { drafts: true },
   access: {
     read: () => true,
   },

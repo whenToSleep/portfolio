@@ -6,7 +6,9 @@ export const SiteSettings: GlobalConfig = {
   admin: {
     group: "Налаштування",
     description: "Ім'я, місто, адреси, соцмережі.",
+    preview: (_doc, { locale }) => `/${locale || "en"}`,
   },
+  versions: { drafts: true },
   access: {
     read: () => true,
   },

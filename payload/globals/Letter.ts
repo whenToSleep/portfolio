@@ -6,7 +6,9 @@ export const Letter: GlobalConfig = {
   admin: {
     group: "Сторінки",
     description: "Сторінка «Лист» — редакційна колонка.",
+    preview: (_doc, { locale }) => `/${locale || "en"}/letter`,
   },
+  versions: { drafts: true },
   access: {
     read: () => true,
   },

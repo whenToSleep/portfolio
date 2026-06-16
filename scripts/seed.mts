@@ -86,6 +86,7 @@ async function seedWorks(tagMap: Record<string, number | string>) {
       subtitle: PROJECT.subtitle.en,
       pull: PROJECT.pull.en,
       body: PROJECT.body.en.join("\n\n"),
+      _status: "published",
     };
     const existing = await findOne("works", "slug", slug);
     let id: number | string;
@@ -105,6 +106,7 @@ async function seedWorks(tagMap: Record<string, number | string>) {
         subtitle: PROJECT.subtitle.uk,
         pull: PROJECT.pull.uk,
         body: PROJECT.body.uk.join("\n\n"),
+        _status: "published",
       }),
     });
   }
@@ -112,7 +114,11 @@ async function seedWorks(tagMap: Record<string, number | string>) {
 }
 
 async function updateGlobal(slug: string, locale: string, data: Record<string, unknown>) {
-  await api(`/api/globals/${slug}?locale=${locale}`, { method: "POST", body: JSON.stringify(data) });
+  // _status:published so the public site shows the content (drafts are enabled).
+  await api(`/api/globals/${slug}?locale=${locale}`, {
+    method: "POST",
+    body: JSON.stringify({ ...data, _status: "published" }),
+  });
 }
 
 async function seedGlobals() {
