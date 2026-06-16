@@ -6,7 +6,7 @@ import {
   JetBrains_Mono,
 } from "next/font/google";
 import "./globals.css";
-import { Providers } from "@/components/Providers";
+import { ThemeProvider } from "@/components/Providers";
 
 // The four typefaces actually rendered by the design, exposed as CSS variables
 // consumed by globals.css (--display / --condensed / --body / --mono).
@@ -46,8 +46,9 @@ export const metadata: Metadata = {
     "The journal of illustrator and printmaker Anya Volkov — commissioned and personal work, slowly made.",
 };
 
-// Set theme + lang before paint to avoid a flash (state is hydrated in Providers).
-const noFlash = `(function(){try{var t=localStorage.getItem('av_theme');document.documentElement.setAttribute('data-theme',t==='dark'?'dark':'light');var l=localStorage.getItem('av_lang');document.documentElement.setAttribute('lang',l==='uk'?'uk':'en');}catch(e){}})();`;
+// Before paint: set theme from localStorage and <html lang> from the URL's
+// locale segment (the page content is already locale-correct via SSR).
+const noFlash = `(function(){try{var t=localStorage.getItem('av_theme');document.documentElement.setAttribute('data-theme',t==='dark'?'dark':'light');var s=location.pathname.split('/')[1];document.documentElement.setAttribute('lang',s==='uk'?'uk':'en');}catch(e){}})();`;
 
 export default function RootLayout({
   children,
@@ -63,7 +64,7 @@ export default function RootLayout({
     >
       <body>
         <script dangerouslySetInnerHTML={{ __html: noFlash }} />
-        <Providers>{children}</Providers>
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   );

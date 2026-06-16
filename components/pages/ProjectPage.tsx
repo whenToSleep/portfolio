@@ -8,7 +8,7 @@ import { Plate } from "../Plate";
 import { Html } from "../Html";
 
 export function ProjectPage({ work }: { work?: Work }) {
-  const { lang } = useLang();
+  const lang = useLang();
   const navigate = useNavigate();
   useReveal(lang);
   const t = STR[lang];

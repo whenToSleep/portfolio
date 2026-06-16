@@ -1,19 +1,20 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { usePathname } from "next/navigation";
-import { STR, type PageKey } from "@/lib/content";
-import { ROUTES, activeKey } from "@/lib/routes";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { STR, type Lang, type PageKey } from "@/lib/content";
+import { ROUTES, activeKey, stripLocale, withLocale } from "@/lib/routes";
 import { useLang, useTheme, useNavigate } from "./Providers";
 
 const NAV_KEYS: PageKey[] = ["home", "issue", "project", "letter", "masthead"];
 
 export function Topbar() {
-  const { lang, setLang } = useLang();
+  const lang = useLang();
   const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
+  const router = useRouter();
   const pathname = usePathname();
-  const active = activeKey(pathname);
+  const active = activeKey(stripLocale(pathname));
 
   const [hideBar, setHideBar] = useState(false);
   const lastY = useRef(0);
@@ -31,6 +32,23 @@ export function Topbar() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // Switch language = navigate to the same page under the other locale and
+  // remember the choice in a cookie the middleware reads for bare URLs.
+  const switchLang = useCallback(
+    (next: Lang) => {
+      if (next === lang) return;
+      try {
+        document.cookie = `NEXT_LOCALE=${next}; path=/; max-age=31536000; samesite=lax`;
+      } catch {}
+      const href = withLocale(next, stripLocale(pathname));
+      const doc = document as Document & { startViewTransition?: (cb: () => void) => void };
+      const go = () => router.push(href);
+      if (typeof doc.startViewTransition === "function") doc.startViewTransition(go);
+      else go();
+    },
+    [lang, pathname, router],
+  );
 
   const t = STR[lang];
 
@@ -76,11 +94,11 @@ export function Topbar() {
 
         <div className="meta-controls">
           <span className="ctrl-group">
-            <a className={lang === "en" ? "on" : ""} onClick={() => setLang("en")}>
+            <a className={lang === "en" ? "on" : ""} onClick={() => switchLang("en")}>
               EN
             </a>
             <span className="sep">·</span>
-            <a className={lang === "uk" ? "on" : ""} onClick={() => setLang("uk")}>
+            <a className={lang === "uk" ? "on" : ""} onClick={() => switchLang("uk")}>
               UA
             </a>
           </span>

@@ -8,7 +8,7 @@ import { useLang, useNavigate } from "../Providers";
 import { Plate } from "../Plate";
 
 export function IssuePage() {
-  const { lang } = useLang();
+  const lang = useLang();
   const navigate = useNavigate();
   const t = STR[lang];
   const [hovered, setHovered] = useState<number | null>(null);

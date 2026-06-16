@@ -7,7 +7,7 @@ import { useLang, useNavigate } from "../Providers";
 import { Html } from "../Html";
 
 export function MastheadPage() {
-  const { lang } = useLang();
+  const lang = useLang();
   const navigate = useNavigate();
   useReveal(lang);
   const t = STR[lang];

@@ -10,67 +10,58 @@ import {
 } from "react";
 import { useRouter } from "next/navigation";
 import type { Lang } from "@/lib/content";
+import { withLocale } from "@/lib/routes";
 import { CustomCursor } from "./CustomCursor";
 import { Topbar } from "./Topbar";
 
 type Theme = "light" | "dark";
 
-const LangContext = createContext<{ lang: Lang; setLang: (l: Lang) => void } | null>(null);
 const ThemeContext = createContext<{ theme: Theme; setTheme: (t: Theme) => void } | null>(null);
-
-export function useLang() {
-  const ctx = useContext(LangContext);
-  if (!ctx) throw new Error("useLang must be used within Providers");
-  return ctx;
-}
+const LangContext = createContext<Lang | null>(null);
 
 export function useTheme() {
   const ctx = useContext(ThemeContext);
-  if (!ctx) throw new Error("useTheme must be used within Providers");
+  if (!ctx) throw new Error("useTheme must be used within ThemeProvider");
   return ctx;
 }
 
+/** Active locale, derived from the [lang] route segment (read-only). */
+export function useLang(): Lang {
+  const lang = useContext(LangContext);
+  if (!lang) throw new Error("useLang must be used within LangProvider");
+  return lang;
+}
+
 /**
- * Navigate while preserving the prototype's fade. Uses the View Transitions
- * API when available; the per-route `.view` fade-in (globals.css) covers
- * browsers without it. Page content re-mounts per route, so the fade runs.
+ * Navigate within the current locale while preserving the prototype's fade.
+ * Accepts a locale-less path ("/works"); the active locale is prepended.
+ * Uses the View Transitions API when available.
  */
 export function useNavigate() {
   const router = useRouter();
+  const lang = useLang();
   return useCallback(
-    (href: string) => {
+    (path: string) => {
+      const href = withLocale(lang, path);
       const go = () => router.push(href);
-      const doc = document as Document & {
-        startViewTransition?: (cb: () => void) => void;
-      };
+      const doc = document as Document & { startViewTransition?: (cb: () => void) => void };
       if (typeof doc.startViewTransition === "function") doc.startViewTransition(go);
       else go();
     },
-    [router],
+    [router, lang],
   );
 }
 
-export function Providers({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Lang>("en");
+/** Root provider: theme (client, persisted) + the custom cursor. Locale-agnostic. */
+export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState<Theme>("light");
 
-  // Hydrate from localStorage after mount. Server and first client render must
-  // agree on the default ("en"/"light") to avoid a hydration mismatch, so the
-  // stored values are applied in an effect (one extra render is intentional;
-  // the no-flash script in layout.tsx already set the visual theme pre-paint).
+  // Hydrate from localStorage after mount (the no-flash script in layout.tsx
+  // already set the visual theme before paint to avoid a flash).
   useEffect(() => {
-    const l = localStorage.getItem("av_lang");
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional localStorage hydration
-    if (l === "uk" || l === "en") setLangState(l);
     const t = localStorage.getItem("av_theme");
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional localStorage hydration
     if (t === "dark" || t === "light") setThemeState(t);
-  }, []);
-
-  const setLang = useCallback((l: Lang) => {
-    setLangState(l);
-    try {
-      localStorage.setItem("av_lang", l);
-    } catch {}
   }, []);
 
   const setTheme = useCallback((t: Theme) => {
@@ -84,17 +75,20 @@ export function Providers({ children }: { children: ReactNode }) {
     document.documentElement.setAttribute("data-theme", theme);
   }, [theme]);
 
-  useEffect(() => {
-    document.documentElement.setAttribute("lang", lang === "uk" ? "uk" : "en");
-  }, [lang]);
-
   return (
-    <LangContext value={{ lang, setLang }}>
-      <ThemeContext value={{ theme, setTheme }}>
-        <CustomCursor />
-        <Topbar />
-        <main key={lang}>{children}</main>
-      </ThemeContext>
+    <ThemeContext value={{ theme, setTheme }}>
+      <CustomCursor />
+      {children}
+    </ThemeContext>
+  );
+}
+
+/** Per-locale provider (under app/[lang]): supplies the active locale + chrome. */
+export function LangProvider({ lang, children }: { lang: Lang; children: ReactNode }) {
+  return (
+    <LangContext value={lang}>
+      <Topbar />
+      <main key={lang}>{children}</main>
     </LangContext>
   );
 }

@@ -63,9 +63,10 @@ for (const lang of langs) {
         console.log('saved', f);
       }
     } else {
-      // Next.js: navigate by real URL — deterministic, no view-transition snapshot.
+      // Next.js: navigate by real URL — locale lives in the path (/en, /uk).
       for (const p of PAGES) {
-        await page.goto(BASE + p.path, { waitUntil: 'networkidle' });
+        const path = p.path === '/' ? `/${lang}` : `/${lang}${p.path}`;
+        await page.goto(BASE + path, { waitUntil: 'networkidle' });
         await page.waitForSelector('header.topbar nav a', { timeout: 20000 });
         await page.waitForTimeout(800);
         const f = `${OUT}/${p.file}-${lang}-${themeFile}.png`;
