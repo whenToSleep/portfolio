@@ -155,7 +155,7 @@ export function IssuePage({ works, tags }: { works: WorkCard[]; tags: TagItem[] 
                           src={w.coverImage.url}
                           alt={w.coverImage.alt ?? w.title}
                           fill
-                          sizes="200px"
+                          sizes="300px"
                           style={{ objectFit: "cover" }}
                         />
                       ) : (

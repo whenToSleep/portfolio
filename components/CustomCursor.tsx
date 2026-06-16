@@ -11,7 +11,8 @@ export function CustomCursor() {
   useEffect(() => {
     const fine =
       window.matchMedia("(hover: hover)").matches &&
-      window.matchMedia("(min-width: 769px)").matches;
+      window.matchMedia("(min-width: 769px)").matches &&
+      !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (!fine) return;
 
     const dot = document.createElement("div");

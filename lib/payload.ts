@@ -26,6 +26,7 @@ export type WorkCard = {
   slug: string;
   tags: { value: string; label: string }[];
   coverImage: MediaImage | null;
+  gallery: MediaImage[];
   subtitle: string;
   pull: string;
   body: string;
@@ -99,6 +100,9 @@ function mapWork(w: Record<string, unknown>): WorkCard {
     slug: (w.slug as string) ?? "",
     tags: Array.isArray(w.tags) ? w.tags.map(mapTagRef) : [],
     coverImage: toImage(w.coverImage),
+    gallery: Array.isArray(w.gallery)
+      ? w.gallery.map(toImage).filter((m): m is MediaImage => m !== null)
+      : [],
     subtitle: (w.subtitle as string) ?? "",
     pull: (w.pull as string) ?? "",
     body: (w.body as string) ?? "",

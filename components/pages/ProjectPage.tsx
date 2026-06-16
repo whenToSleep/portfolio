@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { STR, paragraphs } from "@/lib/content";
 import { ROUTES } from "@/lib/routes";
 import type { WorkCard } from "@/lib/payload";
@@ -18,6 +19,7 @@ export function ProjectPage({ work }: { work: WorkCard }) {
   const medium = isDigital ? t.medium_digi : t.medium_trad;
   const section = w.tags[0]?.label ?? "";
   const body = paragraphs(w.body);
+  const fig2 = w.gallery[0] ?? null;
 
   const tomb: [string, string, boolean][] = [
     [t.tomb.client, w.client, true],
@@ -93,7 +95,19 @@ export function ProjectPage({ work }: { work: WorkCard }) {
 
           <div style={{ gridColumn: "5 / span 8", position: "relative" }} className="article-body reveal from-right">
             <figure style={{ float: "right", width: "58%", margin: "8px 0 18px 28px", shapeOutside: "margin-box" }}>
-              <Plate variant={w.plate} style={{ width: "100%", aspectRatio: "5 / 4" }} />
+              {w.coverImage ? (
+                <div style={{ position: "relative", width: "100%", aspectRatio: "5 / 4" }}>
+                  <Image
+                    src={w.coverImage.url}
+                    alt={w.coverImage.alt ?? w.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 45vw"
+                    style={{ objectFit: "cover" }}
+                  />
+                </div>
+              ) : (
+                <Plate variant={w.plate} style={{ width: "100%", aspectRatio: "5 / 4" }} />
+              )}
               <figcaption
                 style={{ marginTop: 10, fontFamily: "var(--body)", fontStyle: "italic", fontSize: 12, opacity: 0.75, lineHeight: 1.5 }}
               >
@@ -132,7 +146,19 @@ export function ProjectPage({ work }: { work: WorkCard }) {
             </blockquote>
 
             <figure style={{ float: "left", width: "44%", margin: "4px 28px 14px 0", shapeOutside: "margin-box" }}>
-              <Plate variant={(w.plate % 4) + 1} style={{ width: "100%", aspectRatio: "4 / 5" }} />
+              {fig2 ? (
+                <div style={{ position: "relative", width: "100%", aspectRatio: "4 / 5" }}>
+                  <Image
+                    src={fig2.url}
+                    alt={fig2.alt ?? w.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 35vw"
+                    style={{ objectFit: "cover" }}
+                  />
+                </div>
+              ) : (
+                <Plate variant={(w.plate % 4) + 1} style={{ width: "100%", aspectRatio: "4 / 5" }} />
+              )}
               <figcaption
                 style={{ marginTop: 10, fontFamily: "var(--body)", fontStyle: "italic", fontSize: 12, opacity: 0.75, lineHeight: 1.5 }}
               >

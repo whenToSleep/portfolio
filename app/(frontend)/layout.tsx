@@ -7,6 +7,7 @@ import {
 } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/Providers";
+import { SITE_URL } from "@/lib/seo";
 
 // The four typefaces actually rendered by the design, exposed as CSS variables
 // consumed by globals.css (--display / --condensed / --body / --mono).
@@ -41,9 +42,14 @@ const jetbrains = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "Anya Volkov — An Illustrator's Journal",
   description:
     "The journal of illustrator and printmaker Anya Volkov — commissioned and personal work, slowly made.",
+  openGraph: {
+    type: "website",
+    siteName: "Anya Volkov",
+  },
 };
 
 // Before paint: set theme from localStorage and <html lang> from the URL's

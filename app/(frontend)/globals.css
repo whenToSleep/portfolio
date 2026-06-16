@@ -125,6 +125,14 @@ body.grid-on .page::after {
   color: var(--accent);
 }
 
+/* Keyboard focus only — visible accent ring. Mouse/pointer focus is unaffected
+   (:focus-visible), so the static look is unchanged; this aids keyboard users. */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+
 /* ---------- Top masthead nav ---------- */
 .topbar {
   position: sticky;
