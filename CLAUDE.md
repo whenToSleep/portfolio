@@ -8,7 +8,7 @@ prototype into a production **Next.js (App Router) + Payload CMS** application, 
 - **Phase 0 — done.** Visual baseline frozen in `baseline/` (20 screenshots), git repo, screenshot tooling.
 - **Phase 1 — done.** Next.js 16 scaffold; prototype ported 1:1 (pixel-faithful vs baseline). Content still hardcoded in `lib/content.ts`.
 - **Phase 2 — done.** Route-based i18n: every page under `/[lang]` (`/en`, `/uk`); `proxy.ts` redirects bare paths to the preferred locale; language switcher navigates and sets a `NEXT_LOCALE` cookie. SSR serves the correct language; visual regression intact (20/20).
-- **Phase 3 — done.** Payload CMS 3 installed into the app. Admin at `/admin`, Postgres (Neon), localization `en`/`uk`/`ru`. Collections `works`/`tags`/`media`/`users` + globals `siteSettings`/`home`/`letter`/`masthead`. Verified end-to-end: schema pushed to Neon, first admin created, work-with-image created, field localization works (en/uk, ru→en fallback). Frontend (phases 0–2) untouched. **Content is NOT yet read from Payload** — that's Phase 4.
+- **Phase 3 — done.** Payload CMS 3 installed into the app. Admin at `/admin`, Postgres (Neon), localization `en`/`uk`. Collections `works`/`tags`/`media`/`users` + globals `siteSettings`/`home`/`letter`/`masthead`. Verified end-to-end: schema pushed to Neon, first admin created, work-with-image created, field localization works (en/uk). Frontend (phases 0–2) untouched. **Content is NOT yet read from Payload** — that's Phase 4.
 - **Next: Phase 4** (seed content + wire frontend to Payload Local API). See roadmap below.
 
 ## Commands
@@ -37,7 +37,7 @@ node -e "..."   # compare screenshots/*.png to baseline/*.png (dimensions + visu
 ## Project map
 ```
 proxy.ts            # locale routing: redirects bare paths -> /{locale} (cookie/Accept-Language/default); excludes /admin + /api
-payload.config.ts   # Payload config: postgres (Neon), localization en/uk/ru, collections + globals
+payload.config.ts   # Payload config: postgres (Neon), localization en/uk, collections + globals
 payload/            # content model: collections/{Users,Media,Tags,Works}, globals/{SiteSettings,Home,Letter,Masthead}
 app/
   # TWO route groups = two root layouts (Payload admin renders its own <html>):
@@ -67,7 +67,7 @@ lib/routes.ts       # ROUTES map + activeKey()
 
 ## Invariants (don't break these)
 - **Pixel-faithful.** Port/change layout 1:1; verify against `baseline/` after every phase. Do not "improve" the design unasked.
-- **Content lives in `lib/content.ts`** until Phase 4. Keep EN+UK in sync; RU is added with Payload.
+- **Content lives in `lib/content.ts`** until Phase 4. Keep EN+UK in sync. Locales are EN/UK only (RU was removed).
 - **Language is the `/[lang]` route segment** (read-only via `useLang()`); the switcher navigates between locales. Add a locale by extending `LOCALES` in `lib/routes.ts` + the `STR`/content dictionaries.
 - **`useNavigate(path)` takes a locale-less path** ("/works") and prepends the active locale.
 - **`<html lang>` is `en` in the raw SSR HTML** (the `<html>` lives in the root layout, above `/[lang]`); the no-flash script corrects it from the URL before paint. Page *content* is locale-correct server-side. Real hreflang/SEO signals land in Phase 7.
@@ -87,10 +87,10 @@ lib/routes.ts       # ROUTES map + activeKey()
 - **Caveat — type generation:** `pnpm generate:types` / `generate:importmap` currently fail with `ERR_REQUIRE_ASYNC_MODULE` (tsx + Node 22). The build does not need them yet. Resolve in Phase 4 (commit the generated `payload-types.ts` for typed Local API queries). `app/(payload)/admin/importMap.js` is the template's and works as-is.
 
 ## Roadmap (remaining phases — see PLAN.md for detail)
-- **Phase 2 — Route i18n. ✓ done.** `/[lang]` segments, `proxy.ts` default-locale redirect, switcher. RU still pending (Phase 3).
-- **Phase 3 — Payload install + content model. ✓ done.** Manual integration (not create-payload-app): packages + `app/(payload)` boilerplate (from the v3.85.1 blank template) + `withPayload` + `@payload-config`. Postgres via Neon, `localization` en/uk/ru, public read / auth write. See `.claude/skills/payload-cms` and the CMS section above.
+- **Phase 2 — Route i18n. ✓ done.** `/[lang]` segments, `proxy.ts` default-locale redirect, switcher (EN/UK).
+- **Phase 3 — Payload install + content model. ✓ done.** Manual integration (not create-payload-app): packages + `app/(payload)` boilerplate (from the v3.85.1 blank template) + `withPayload` + `@payload-config`. Postgres via Neon, `localization` en/uk, public read / auth write. See `.claude/skills/payload-cms` and the CMS section above.
 - **Phase 4 — Seed + wire frontend to CMS.** Seed all 12 works + STR/ARTIST/LETTER (EN+UK). Replace `lib/content.ts` imports with Payload Local API in server components. `.plate` becomes the graceful fallback when a Media image is absent. **First:** generate `payload-types.ts` (see CMS caveat) and resolve the Blob token so deployed media works.
-- **Phase 5 — Admin UX.** Tabs/groups, RU/clear labels + `admin.description`, hide technical fields, Draft+Publish, Live Preview — so a non-technical user can edit any text/image and publish.
+- **Phase 5 — Admin UX.** Tabs/groups, clear labels + `admin.description`, hide technical fields, Draft+Publish, Live Preview — so a non-technical user can edit any text/image and publish.
 - **Phase 6 — Vercel stage.** Connect repo, env (DB/Blob/PAYLOAD_SECRET), ISR/on-demand revalidation on publish.
 - **Phase 7 — Images/SEO/a11y/perf.** `imageSizes` + `next/image` + blur, metadata/OG/sitemap/robots/hreflang, contrast/focus/reduced-motion/alt, Lighthouse ≥ 90. (favicon/OG currently the Next default — replace here.)
 - **Phase 8 — VPS prod.** Docker compose (Next+Payload, Postgres, Caddy/Nginx TLS), S3-compatible storage (R2/MinIO), backups, CI.

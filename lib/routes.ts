@@ -1,6 +1,6 @@
 import { WORKS, workSlug, type Lang, type PageKey } from "./content";
 
-/** Active UI locales. RU is added in Phase 3 alongside Payload. */
+/** Active UI locales (EN/UK only). */
 export const LOCALES: Lang[] = ["en", "uk"];
 export const DEFAULT_LOCALE: Lang = "en";
 
