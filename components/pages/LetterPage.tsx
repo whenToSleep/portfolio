@@ -1,17 +1,18 @@
 "use client";
 
-import { L, LETTER, STR } from "@/lib/content";
+import { STR, paragraphs } from "@/lib/content";
 import { ROUTES } from "@/lib/routes";
+import type { LetterContent } from "@/lib/payload";
 import { useReveal } from "@/hooks/useReveal";
 import { useLang, useNavigate } from "../Providers";
 import { Html } from "../Html";
 
-export function LetterPage() {
+export function LetterPage({ letter }: { letter: LetterContent }) {
   const lang = useLang();
   const navigate = useNavigate();
   useReveal(lang);
   const t = STR[lang];
-  const paras = L(LETTER.paragraphs, lang);
+  const paras = paragraphs(letter.paragraphs);
 
   return (
     <div className="view">
@@ -53,7 +54,7 @@ export function LetterPage() {
             fontStretch: "85%",
           }}
         >
-          {L(LETTER.dek, lang)}
+          {letter.dek}
         </p>
 
         <article className="article-body reveal" style={{ maxWidth: 580, marginLeft: 152 }}>
@@ -71,7 +72,7 @@ export function LetterPage() {
               fontVariationSettings: '"opsz" 144, "SOFT" 50, "wght" 380',
             }}
           >
-            {t.letter_sign}
+            {letter.signature}
           </p>
         </article>
 

@@ -24,6 +24,46 @@ export type WorkCard = {
   slug: string;
   tags: { value: string; label: string }[];
   coverImage: MediaImage | null;
+  subtitle: string;
+  pull: string;
+  body: string;
+};
+
+export type SiteSettings = {
+  name: string;
+  city: string;
+  email: string;
+  commissions: string;
+  press: string;
+  socials: { label: string; handle: string; url: string }[];
+};
+
+export type HomeContent = {
+  metaLeft: string;
+  metaRight: string;
+  statementLabel: string;
+  statement: string;
+  figCaption: string;
+  coverNote: string;
+  readProject: string;
+  availLabel: string;
+  avail: string;
+  copyright: string;
+  place: string;
+};
+
+export type LetterContent = { dek: string; paragraphs: string; signature: string };
+
+export type MastheadContent = {
+  dek: string;
+  studioLabel: string;
+  roles: { role: string; name: string; contact: string }[];
+  distLabel: string;
+  distribution: { label: string; handle: string; url: string }[];
+  typeLabel: string;
+  typeBody: string;
+  colophonLeft: string;
+  colophonRight: string;
 };
 
 async function client() {
@@ -57,8 +97,15 @@ function mapWork(w: Record<string, unknown>): WorkCard {
     slug: (w.slug as string) ?? "",
     tags: Array.isArray(w.tags) ? w.tags.map(mapTagRef) : [],
     coverImage: toImage(w.coverImage),
+    subtitle: (w.subtitle as string) ?? "",
+    pull: (w.pull as string) ?? "",
+    body: (w.body as string) ?? "",
   };
 }
+
+const str = (o: Record<string, unknown>, k: string) => (o[k] as string) ?? "";
+const arr = (o: Record<string, unknown>, k: string) =>
+  Array.isArray(o[k]) ? (o[k] as Record<string, unknown>[]) : [];
 
 export async function getTags(locale: Lang): Promise<TagItem[]> {
   const p = await client();
@@ -87,4 +134,57 @@ export async function getWorkBySlug(locale: Lang, slug: string): Promise<WorkCar
   });
   const doc = res.docs[0];
   return doc ? mapWork(doc as Record<string, unknown>) : null;
+}
+
+export async function getSiteSettings(locale: Lang): Promise<SiteSettings> {
+  const p = await client();
+  const g = (await p.findGlobal({ slug: "siteSettings", locale, depth: 0 })) as Record<string, unknown>;
+  return {
+    name: str(g, "name"),
+    city: str(g, "city"),
+    email: str(g, "email"),
+    commissions: str(g, "commissions"),
+    press: str(g, "press"),
+    socials: arr(g, "socials").map((s) => ({ label: str(s, "label"), handle: str(s, "handle"), url: str(s, "url") })),
+  };
+}
+
+export async function getHome(locale: Lang): Promise<HomeContent> {
+  const p = await client();
+  const g = (await p.findGlobal({ slug: "home", locale, depth: 0 })) as Record<string, unknown>;
+  return {
+    metaLeft: str(g, "metaLeft"),
+    metaRight: str(g, "metaRight"),
+    statementLabel: str(g, "statementLabel"),
+    statement: str(g, "statement"),
+    figCaption: str(g, "figCaption"),
+    coverNote: str(g, "coverNote"),
+    readProject: str(g, "readProject"),
+    availLabel: str(g, "availLabel"),
+    avail: str(g, "avail"),
+    copyright: str(g, "copyright"),
+    place: str(g, "place"),
+  };
+}
+
+export async function getLetter(locale: Lang): Promise<LetterContent> {
+  const p = await client();
+  const g = (await p.findGlobal({ slug: "letter", locale, depth: 0 })) as Record<string, unknown>;
+  return { dek: str(g, "dek"), paragraphs: str(g, "paragraphs"), signature: str(g, "signature") };
+}
+
+export async function getMasthead(locale: Lang): Promise<MastheadContent> {
+  const p = await client();
+  const g = (await p.findGlobal({ slug: "masthead", locale, depth: 0 })) as Record<string, unknown>;
+  return {
+    dek: str(g, "dek"),
+    studioLabel: str(g, "studioLabel"),
+    roles: arr(g, "roles").map((r) => ({ role: str(r, "role"), name: str(r, "name"), contact: str(r, "contact") })),
+    distLabel: str(g, "distLabel"),
+    distribution: arr(g, "distribution").map((d) => ({ label: str(d, "label"), handle: str(d, "handle"), url: str(d, "url") })),
+    typeLabel: str(g, "typeLabel"),
+    typeBody: str(g, "typeBody"),
+    colophonLeft: str(g, "colophonLeft"),
+    colophonRight: str(g, "colophonRight"),
+  };
 }

@@ -2,15 +2,17 @@
 
 import { STR } from "@/lib/content";
 import { ROUTES } from "@/lib/routes";
+import type { MastheadContent } from "@/lib/payload";
 import { useReveal } from "@/hooks/useReveal";
 import { useLang, useNavigate } from "../Providers";
 import { Html } from "../Html";
 
-export function MastheadPage() {
+export function MastheadPage({ masthead }: { masthead: MastheadContent }) {
   const lang = useLang();
   const navigate = useNavigate();
   useReveal(lang);
   const t = STR[lang];
+  const m = masthead;
 
   return (
     <div className="view">
@@ -34,15 +36,15 @@ export function MastheadPage() {
           className="sub reveal from-right"
           style={{ fontSize: 14, margin: "0 0 80px", paddingBottom: 22, borderBottom: "2px solid var(--ink)" }}
         >
-          {t.mast_dek}
+          {m.dek}
         </p>
 
         <div className="grid-12 reveal">
           <div style={{ gridColumn: "1 / span 6", paddingRight: 32 }}>
             <div className="mono" style={{ opacity: 0.6, marginBottom: 24 }}>
-              {t.studio_label}
+              {m.studioLabel}
             </div>
-            {t.roles.map((row, i) => (
+            {m.roles.map((row, i) => (
               <div
                 key={i}
                 className="grid-12"
@@ -55,7 +57,7 @@ export function MastheadPage() {
                 }}
               >
                 <div style={{ gridColumn: "1 / span 6", fontFamily: "var(--body)", fontSize: 15, fontStyle: "italic" }}>
-                  {row[0]}
+                  {row.role}
                 </div>
                 <div style={{ gridColumn: "7 / span 6", textAlign: "right" }}>
                   <div
@@ -67,16 +69,16 @@ export function MastheadPage() {
                       lineHeight: 1.2,
                     }}
                   >
-                    {row[1]}
+                    {row.name}
                   </div>
-                  {row[2] !== "—" ? (
+                  {row.contact && row.contact !== "—" ? (
                     <a
                       className="e-link mono"
                       data-cursor="Mail"
-                      href={`mailto:${row[2]}`}
+                      href={`mailto:${row.contact}`}
                       style={{ display: "inline-block", marginTop: 4 }}
                     >
-                      {row[2]}
+                      {row.contact}
                     </a>
                   ) : (
                     <div className="mono" style={{ opacity: 0.5, marginTop: 4 }}>
@@ -90,10 +92,10 @@ export function MastheadPage() {
 
           <div style={{ gridColumn: "7 / span 6", paddingLeft: 32, borderLeft: "1px solid var(--rule)" }}>
             <div className="mono" style={{ opacity: 0.6, marginBottom: 24 }}>
-              {t.dist_label}
+              {m.distLabel}
             </div>
             <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-              {t.dist.map((row, i) => (
+              {m.distribution.map((row, i) => (
                 <li
                   key={i}
                   style={{
@@ -114,16 +116,16 @@ export function MastheadPage() {
                       letterSpacing: "-0.01em",
                     }}
                   >
-                    {row[0]}
+                    {row.label}
                   </span>
                   <a
                     className="e-link"
                     data-cursor="Visit"
-                    href={row[2]}
+                    href={row.url}
                     target="_blank"
                     style={{ fontFamily: "var(--body)", fontStyle: "italic", fontSize: 15, textAlign: "right" }}
                   >
-                    {row[1]}
+                    {row.handle}
                   </a>
                 </li>
               ))}
@@ -131,9 +133,9 @@ export function MastheadPage() {
 
             <div style={{ marginTop: 56 }}>
               <div className="mono" style={{ opacity: 0.6, marginBottom: 16 }}>
-                {t.type_label}
+                {m.typeLabel}
               </div>
-              <Html tag="p" html={t.type_body} style={{ fontFamily: "var(--body)", fontSize: 15, lineHeight: 1.62, margin: 0 }} />
+              <Html tag="p" html={m.typeBody} style={{ fontFamily: "var(--body)", fontSize: 15, lineHeight: 1.62, margin: 0 }} />
             </div>
           </div>
         </div>
@@ -142,10 +144,10 @@ export function MastheadPage() {
           <hr className="hrule ink" />
           <div style={{ marginTop: 22, display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 24, flexWrap: "wrap" }}>
             <div className="mono" style={{ opacity: 0.75 }}>
-              {t.colophon_l}
+              {m.colophonLeft}
             </div>
             <div className="mono" style={{ opacity: 0.75 }}>
-              {t.colophon_r}
+              {m.colophonRight}
             </div>
           </div>
           <div style={{ marginTop: 28, display: "flex", gap: 18, alignItems: "baseline" }}>

@@ -22,10 +22,11 @@ export const Masthead: GlobalConfig = {
     {
       name: "roles",
       type: "array",
+      localized: true,
       label: "Майстерня (ролі)",
       fields: [
-        { name: "role", type: "text", localized: true, label: "Роль" },
-        { name: "name", type: "text", localized: true, label: "Ім'я / опис" },
+        { name: "role", type: "text", label: "Роль" },
+        { name: "name", type: "text", label: "Ім'я / опис" },
         { name: "contact", type: "text", label: "Контакт" },
       ],
     },
@@ -38,15 +39,22 @@ export const Masthead: GlobalConfig = {
     {
       name: "distribution",
       type: "array",
+      localized: true,
       label: "Поширення",
       fields: [
-        { name: "label", type: "text", localized: true, label: "Назва" },
-        { name: "handle", type: "text", localized: true, label: "Підпис" },
+        { name: "label", type: "text", label: "Назва" },
+        { name: "handle", type: "text", label: "Підпис" },
         { name: "url", type: "text", label: "Посилання" },
       ],
     },
     { name: "typeLabel", type: "text", localized: true, label: "Підпис «Про шрифт»" },
-    { name: "typeBody", type: "richText", localized: true, label: "Про шрифт" },
+    {
+      name: "typeBody",
+      type: "textarea",
+      localized: true,
+      label: "Про шрифт",
+      admin: { description: "Можна використати <em>…</em> для курсиву." },
+    },
     {
       type: "row",
       fields: [

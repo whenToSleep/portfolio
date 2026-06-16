@@ -1,17 +1,23 @@
 "use client";
 
-import { ARTIST, STR } from "@/lib/content";
+import { STR } from "@/lib/content";
 import { ROUTES } from "@/lib/routes";
+import type { HomeContent, SiteSettings } from "@/lib/payload";
 import { useReveal } from "@/hooks/useReveal";
 import { useLang, useNavigate } from "../Providers";
 import { Plate } from "../Plate";
 import { Html } from "../Html";
 
-export function HomePage() {
+export function HomePage({ home, site }: { home: HomeContent; site: SiteSettings }) {
   const lang = useLang();
   const navigate = useNavigate();
   useReveal(lang);
   const t = STR[lang];
+
+  // Render the artist name with the last word in italic (as in the prototype).
+  const nameParts = site.name.trim().split(/\s+/);
+  const firstNames = nameParts.slice(0, -1).join(" ");
+  const lastName = nameParts[nameParts.length - 1] ?? "";
 
   return (
     <div className="view">
@@ -21,10 +27,10 @@ export function HomePage() {
           style={{ alignItems: "baseline", paddingBottom: 18, borderBottom: "1px solid var(--ink)" }}
         >
           <div style={{ gridColumn: "1 / span 6" }} className="mono">
-            {t.home_meta_l}
+            {home.metaLeft}
           </div>
           <div style={{ gridColumn: "7 / span 6", textAlign: "right" }} className="mono">
-            {t.home_meta_r}
+            {home.metaRight}
           </div>
         </div>
 
@@ -32,15 +38,9 @@ export function HomePage() {
           className="display reveal"
           style={{ fontSize: 168, margin: "28px 0 48px", letterSpacing: "-0.025em", lineHeight: 1.0 }}
         >
-          {lang === "uk" ? (
-            <span>
-              Аня <span style={{ fontStyle: "italic" }}>Волкова</span>
-            </span>
-          ) : (
-            <span>
-              Anya <span style={{ fontStyle: "italic" }}>Volkov</span>
-            </span>
-          )}
+          <span>
+            {firstNames} <span style={{ fontStyle: "italic" }}>{lastName}</span>
+          </span>
         </h1>
 
         <hr className="hrule thick reveal from-right" style={{ marginBottom: 8 }} />
@@ -48,11 +48,11 @@ export function HomePage() {
         <div className="grid-12" style={{ marginTop: 56 }}>
           <div className="reveal" style={{ gridColumn: "1 / span 5" }}>
             <div className="mono" style={{ marginBottom: 24, opacity: 0.7 }}>
-              {t.home_statement_label}
+              {home.statementLabel}
             </div>
             <Html
               tag="p"
-              html={t.home_statement}
+              html={home.statement}
               className="display"
               style={{
                 fontSize: 40,
@@ -65,7 +65,7 @@ export function HomePage() {
           </div>
 
           <div className="reveal from-right" style={{ gridColumn: "7 / span 6" }}>
-            <Plate variant={1} label={t.home_fig} style={{ width: "100%", aspectRatio: "4 / 5.2" }} />
+            <Plate variant={1} label={home.figCaption} style={{ width: "100%", aspectRatio: "4 / 5.2" }} />
             <div
               style={{
                 display: "flex",
@@ -92,10 +92,10 @@ export function HomePage() {
                 >
                   {t.fig_lead}
                 </em>
-                {t.home_cover_note}
+                {home.coverNote}
               </span>
               <a className="e-link" data-cursor="Read" onClick={() => navigate(ROUTES.project)}>
-                {t.read_project}
+                {home.readProject}
               </a>
             </div>
           </div>
@@ -106,7 +106,7 @@ export function HomePage() {
           <div className="grid-12" style={{ paddingTop: 30, paddingBottom: 40 }}>
             <div style={{ gridColumn: "1 / span 5", paddingRight: 24, borderRight: "1px solid var(--rule)" }}>
               <div className="mono" style={{ opacity: 0.6, marginBottom: 12 }}>
-                {t.home_avail_label}
+                {home.availLabel}
               </div>
               <p
                 className="display"
@@ -117,7 +117,7 @@ export function HomePage() {
                   fontVariationSettings: '"opsz" 144, "SOFT" 30, "wght" 380',
                 }}
               >
-                {t.home_avail}
+                {home.avail}
               </p>
             </div>
             <div style={{ gridColumn: "7 / span 3" }}>
@@ -127,10 +127,10 @@ export function HomePage() {
               <a
                 className="e-link"
                 data-cursor="Mail"
-                href={`mailto:${ARTIST.email}`}
+                href={`mailto:${site.email}`}
                 style={{ fontFamily: "var(--body)", fontSize: 17, fontStyle: "italic" }}
               >
-                {ARTIST.email}
+                {site.email}
               </a>
             </div>
             <div style={{ gridColumn: "10 / span 3" }}>
@@ -138,20 +138,20 @@ export function HomePage() {
                 {t.home_follow_label}
               </div>
               <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 10 }}>
-                {t.home_social.map(([name, handle, url], i) => (
+                {site.socials.map((s, i) => (
                   <li key={i} style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12 }}>
                     <span className="sub" style={{ fontSize: 11 }}>
-                      {name}
+                      {s.label}
                     </span>
                     <a
                       className="e-link"
                       data-cursor="Visit"
-                      href={url}
+                      href={s.url}
                       target="_blank"
                       rel="noopener"
                       style={{ fontFamily: "var(--body)", fontSize: 15, fontStyle: "italic" }}
                     >
-                      {handle}
+                      {s.handle}
                     </a>
                   </li>
                 ))}
@@ -170,10 +170,10 @@ export function HomePage() {
             }}
           >
             <span className="mono" style={{ opacity: 0.7 }}>
-              {t.home_copyright}
+              {home.copyright}
             </span>
             <span className="mono" style={{ opacity: 0.7 }}>
-              {t.home_place}
+              {home.place}
             </span>
           </div>
         </footer>

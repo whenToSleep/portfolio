@@ -12,7 +12,13 @@ export const Letter: GlobalConfig = {
   },
   fields: [
     { name: "dek", type: "textarea", localized: true, label: "Підзаголовок" },
-    { name: "paragraphs", type: "richText", localized: true, label: "Текст листа" },
+    {
+      name: "paragraphs",
+      type: "textarea",
+      localized: true,
+      label: "Текст листа",
+      admin: { description: "Абзаци розділяйте порожнім рядком." },
+    },
     { name: "signature", type: "text", localized: true, label: "Підпис" },
   ],
 };

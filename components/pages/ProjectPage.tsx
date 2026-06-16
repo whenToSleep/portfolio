@@ -1,26 +1,29 @@
 "use client";
 
-import { L, PROJECT, STR, TAGS, WORKS, type Work } from "@/lib/content";
+import { STR, paragraphs } from "@/lib/content";
 import { ROUTES } from "@/lib/routes";
+import type { WorkCard } from "@/lib/payload";
 import { useReveal } from "@/hooks/useReveal";
 import { useLang, useNavigate } from "../Providers";
 import { Plate } from "../Plate";
 import { Html } from "../Html";
 
-export function ProjectPage({ work }: { work?: Work }) {
+export function ProjectPage({ work }: { work: WorkCard }) {
   const lang = useLang();
   const navigate = useNavigate();
   useReveal(lang);
   const t = STR[lang];
-  const w = work || WORKS[0];
-  const isDigital = w.tags.includes("Digital");
+  const w = work;
+  const isDigital = w.tags.some((tg) => tg.value === "Digital");
   const medium = isDigital ? t.medium_digi : t.medium_trad;
+  const section = w.tags[0]?.label ?? "";
+  const body = paragraphs(w.body);
 
   const tomb: [string, string, boolean][] = [
     [t.tomb.client, w.client, true],
     [t.tomb.year, String(w.year), false],
     [t.tomb.medium, medium, false],
-    [t.tomb.section, L(TAGS[w.tags[0]], lang), false],
+    [t.tomb.section, section, false],
   ];
 
   return (
@@ -36,14 +39,14 @@ export function ProjectPage({ work }: { work?: Work }) {
         </div>
 
         <div className="sub reveal" style={{ fontSize: 13, margin: "40px 0 14px", color: "var(--accent)" }}>
-          — {L(TAGS[w.tags[0]], lang)} —
+          — {section} —
         </div>
 
         <h2
           className="display reveal"
           style={{ fontSize: 88, margin: 0, letterSpacing: "-0.022em", lineHeight: 0.98, maxWidth: "15ch" }}
         >
-          {L(w.title, lang)}
+          {w.title}
         </h2>
 
         <p
@@ -59,7 +62,7 @@ export function ProjectPage({ work }: { work?: Work }) {
             fontStretch: "85%",
           }}
         >
-          {L(PROJECT.subtitle, lang)}
+          {w.subtitle}
         </p>
 
         <div className="grid-12">
@@ -101,7 +104,7 @@ export function ProjectPage({ work }: { work?: Work }) {
               </figcaption>
             </figure>
 
-            <p className="dropcap">{L(PROJECT.body, lang)[0]}</p>
+            <p className="dropcap">{body[0]}</p>
 
             <blockquote
               style={{
@@ -124,7 +127,7 @@ export function ProjectPage({ work }: { work?: Work }) {
                   fontVariationSettings: '"opsz" 144, "SOFT" 40, "wght" 380',
                 }}
               >
-                «{L(PROJECT.pull, lang)}»
+                «{w.pull}»
               </p>
             </blockquote>
 
@@ -140,7 +143,7 @@ export function ProjectPage({ work }: { work?: Work }) {
               </figcaption>
             </figure>
 
-            <p>{L(PROJECT.body, lang)[1]}</p>
+            <p>{body[1]}</p>
 
             <div
               style={{

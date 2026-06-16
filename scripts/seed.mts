@@ -8,7 +8,7 @@
  * Seeds Tags (5) and Works (12) in EN + UK. Images are left empty on purpose —
  * the real illustrations come later; the site degrades to placeholders.
  */
-import { WORKS, TAGS, TAG_ORDER, slugify } from "../lib/content";
+import { WORKS, TAGS, TAG_ORDER, ARTIST, LETTER, PROJECT, STR, slugify } from "../lib/content";
 
 const BASE = process.env.SEED_URL || "http://localhost:3000";
 const EMAIL = process.env.SEED_EMAIL || "admin@anyavolkov.work";
@@ -83,6 +83,9 @@ async function seedWorks(tagMap: Record<string, number | string>) {
       plate: w.plate,
       tags: tagIds,
       slug,
+      subtitle: PROJECT.subtitle.en,
+      pull: PROJECT.pull.en,
+      body: PROJECT.body.en.join("\n\n"),
     };
     const existing = await findOne("works", "slug", slug);
     let id: number | string;
@@ -95,9 +98,69 @@ async function seedWorks(tagMap: Record<string, number | string>) {
       id = res.doc.id;
       created++;
     }
-    await api(`/api/works/${id}?locale=uk`, { method: "PATCH", body: JSON.stringify({ title: w.title.uk }) });
+    await api(`/api/works/${id}?locale=uk`, {
+      method: "PATCH",
+      body: JSON.stringify({
+        title: w.title.uk,
+        subtitle: PROJECT.subtitle.uk,
+        pull: PROJECT.pull.uk,
+        body: PROJECT.body.uk.join("\n\n"),
+      }),
+    });
   }
   console.log(`✓ works: ${created} created, ${updated} updated (of ${WORKS.length})`);
+}
+
+async function updateGlobal(slug: string, locale: string, data: Record<string, unknown>) {
+  await api(`/api/globals/${slug}?locale=${locale}`, { method: "POST", body: JSON.stringify(data) });
+}
+
+async function seedGlobals() {
+  for (const lang of ["en", "uk"] as const) {
+    const s = STR[lang];
+
+    const site: Record<string, unknown> = { name: ARTIST.name[lang], city: ARTIST.city[lang] };
+    if (lang === "en") {
+      site.email = ARTIST.email;
+      site.commissions = ARTIST.commissions;
+      site.press = ARTIST.press;
+      site.socials = s.home_social.map(([label, handle, url]) => ({ label, handle, url }));
+    }
+    await updateGlobal("siteSettings", lang, site);
+
+    await updateGlobal("home", lang, {
+      metaLeft: s.home_meta_l,
+      metaRight: s.home_meta_r,
+      statementLabel: s.home_statement_label,
+      statement: s.home_statement,
+      figCaption: s.home_fig,
+      coverNote: s.home_cover_note,
+      readProject: s.read_project,
+      availLabel: s.home_avail_label,
+      avail: s.home_avail,
+      copyright: s.home_copyright,
+      place: s.home_place,
+    });
+
+    await updateGlobal("letter", lang, {
+      dek: LETTER.dek[lang],
+      paragraphs: LETTER.paragraphs[lang].join("\n\n"),
+      signature: s.letter_sign,
+    });
+
+    await updateGlobal("masthead", lang, {
+      dek: s.mast_dek,
+      studioLabel: s.studio_label,
+      roles: s.roles.map(([role, name, contact]) => ({ role, name, contact })),
+      distLabel: s.dist_label,
+      distribution: s.dist.map(([label, handle, url]) => ({ label, handle, url })),
+      typeLabel: s.type_label,
+      typeBody: s.type_body,
+      colophonLeft: s.colophon_l,
+      colophonRight: s.colophon_r,
+    });
+  }
+  console.log("✓ globals: siteSettings, home, letter, masthead (en/uk)");
 }
 
 async function main() {
@@ -105,6 +168,7 @@ async function main() {
   await login();
   const tagMap = await seedTags();
   await seedWorks(tagMap);
+  await seedGlobals();
   console.log("Done.");
   process.exit(0);
 }

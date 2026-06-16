@@ -398,3 +398,11 @@ export function workSlug(w: Work): string {
 export function getWorkBySlug(slug: string): Work | undefined {
   return WORKS.find((w) => workSlug(w) === slug);
 }
+
+/** Split a textarea body into paragraphs (blank-line separated). */
+export function paragraphs(text: string): string[] {
+  return text
+    .split(/\n\s*\n/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+}

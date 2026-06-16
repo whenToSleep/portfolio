@@ -79,9 +79,10 @@ export const Works: CollectionConfig = {
     },
     {
       name: "body",
-      type: "richText",
+      type: "textarea",
       localized: true,
       label: "Текст проєкту",
+      admin: { description: "Абзаци розділяйте порожнім рядком." },
     },
     {
       name: "slug",
