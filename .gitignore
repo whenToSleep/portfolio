@@ -36,3 +36,9 @@ Thumbs.db
 
 # typescript
 *.tsbuildinfo
+
+.vercel
+.env*
+
+# payload local media uploads (dev). Production uses Vercel Blob.
+/media
