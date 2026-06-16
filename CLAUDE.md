@@ -5,6 +5,14 @@ prototype into a production **Next.js (App Router) + Payload CMS** application, 
 `PLAN.md`. This file is the working context for that migration.
 
 ## Status
+
+> **Convention:** keep this section current — update **Current state / Next up** (and the phase log) at the **start of every phase**, before doing the work.
+
+**Current state (readiness):** Phases 0–5 done. The bilingual EN/UK site is fully CMS-driven on **Next.js 16 + Payload 3** (Neon Postgres), pixel-faithful to the baseline (20/20), with **Draft + Publish** in the admin. Code on GitHub (`whenToSleep/portfolio`, `main` = `dev`); Vercel deploys `main` (pages are SSG from build-time CMS reads). Works/images are still **placeholders** (no real illustrations yet).
+
+**Next up:** **Phase 6** — Vercel ISR / on-demand revalidation so published admin edits appear in prod without a rebuild; also resolve `BLOB_READ_WRITE_TOKEN` so media uploads work on Vercel.
+
+**Phase log:**
 - **Phase 0 — done.** Visual baseline frozen in `baseline/` (20 screenshots), git repo, screenshot tooling.
 - **Phase 1 — done.** Next.js 16 scaffold; prototype ported 1:1 (pixel-faithful vs baseline). Content still hardcoded in `lib/content.ts`.
 - **Phase 2 — done.** Route-based i18n: every page under `/[lang]` (`/en`, `/uk`); `proxy.ts` redirects bare paths to the preferred locale; language switcher navigates and sets a `NEXT_LOCALE` cookie. SSR serves the correct language; visual regression intact (20/20).
@@ -93,10 +101,12 @@ scripts/seed.mts    # idempotent REST seed (run `pnpm seed` against a running de
 ## Roadmap (remaining phases — see PLAN.md for detail)
 - **Phase 2 — Route i18n. ✓ done.** `/[lang]` segments, `proxy.ts` default-locale redirect, switcher (EN/UK).
 - **Phase 3 — Payload install + content model. ✓ done.** Manual integration (not create-payload-app): packages + `app/(payload)` boilerplate (from the v3.85.1 blank template) + `withPayload` + `@payload-config`. Postgres via Neon, `localization` en/uk, public read / auth write. See `.claude/skills/payload-cms` and the CMS section above.
-- **Phase 4 — Seed + wire frontend to CMS.** Seed all 12 works + STR/ARTIST/LETTER (EN+UK). Replace `lib/content.ts` imports with Payload Local API in server components. `.plate` becomes the graceful fallback when a Media image is absent. **First:** generate `payload-types.ts` (see CMS caveat) and resolve the Blob token so deployed media works.
-- **Phase 5 — Admin UX.** Tabs/groups, clear labels + `admin.description`, hide technical fields, Draft+Publish, Live Preview — so a non-technical user can edit any text/image and publish.
-- **Phase 6 — Vercel stage.** Connect repo, env (DB/Blob/PAYLOAD_SECRET), ISR/on-demand revalidation on publish.
+- **Phase 4 — Seed + wire frontend to CMS. ✓ done.** All pages read Payload (Local API); `pnpm seed` seeds Works/Tags/globals EN+UK; `.plate` fallback when no image; `textarea` (not richText) for paragraphs.
+- **Phase 5 — Admin UX. ✓ done.** Tabs, clear UA labels + `admin.description`, sidebar `slug`/`plate`, Draft+Publish, Preview buttons. (Real-time iframe **Live Preview** of unsaved edits not yet wired — optional, would need draft-mode routes + `useLivePreview`.)
+- **Phase 6 — Vercel stage.** ISR / on-demand revalidation so publish updates prod without a rebuild; resolve `BLOB_READ_WRITE_TOKEN` (media on Vercel); optionally generate `payload-types.ts`; optionally real-time Live Preview.
 - **Phase 7 — Images/SEO/a11y/perf.** `imageSizes` + `next/image` + blur, metadata/OG/sitemap/robots/hreflang, contrast/focus/reduced-motion/alt, Lighthouse ≥ 90. (favicon/OG currently the Next default — replace here.)
-- **Phase 8 — VPS prod.** Docker compose (Next+Payload, Postgres, Caddy/Nginx TLS), S3-compatible storage (R2/MinIO), backups, CI.
+- **Content — text pass (before Phase 8).** Review/correct all real copy in `/admin` (globals + works). Decide whether the remaining UI-chrome strings (`STR` in `lib/content.ts`: nav, filter, pagination, tombstone, section/page titles) need to become a `ui` global so the client can edit them too. Do this as content work in the admin, not a code migration, unless chrome must be editable.
+- **Content — portfolio works (before Phase 8).** Replace the 12 **placeholder** works with the real portfolio: real titles/clients/years/tags (EN+UK) + upload real illustrations (`coverImage`/`gallery`). The `.plate` fallback retires per work as images land. This is data entry in `/admin` (or an updated `seed`), separate from the text pass above.
+- **Phase 8 — VPS prod.** Docker compose (Next+Payload, Postgres, Caddy/Nginx TLS), S3-compatible storage (R2/MinIO), backups, CI. Start only after both content passes are done.
 
-Work one phase per branch off `dev`; build + visual-diff + commit at the end of each.
+Work one phase per branch off `dev`; build + visual-diff + commit at the end of each. **At the start of each phase, update the Status section's Current state / Next up.**
