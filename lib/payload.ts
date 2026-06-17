@@ -117,6 +117,14 @@ const arr = (o: Record<string, unknown>, k: string) =>
 // Payload afterChange/afterDelete hooks (see lib/revalidate.ts) invalidate these
 // tags on publish, so the statically-rendered pages regenerate without a rebuild.
 // `locale` is part of the cache key (the function arg is bound at call time).
+//
+// CACHE_VERSION is part of every key: bump it whenever content is replaced
+// out-of-band (e.g. a CMS re-seed). Vercel persists the Data Cache across
+// deploys, so without a key change a rebuild would re-serve the stale cached
+// reads instead of the new CMS data. `revalidate` also lets prod self-heal
+// (time-based ISR) on top of the Phase-6 tag invalidation.
+const CACHE_VERSION = "2026-06-content";
+const CACHE_OPTS = (tags: string[]) => ({ tags, revalidate: 600 });
 
 export async function getTags(locale: Lang): Promise<TagItem[]> {
   return unstable_cache(
@@ -129,8 +137,8 @@ export async function getTags(locale: Lang): Promise<TagItem[]> {
         order: (t.order as number) ?? 0,
       }));
     },
-    ["getTags", locale],
-    { tags: [CACHE_TAGS.tags] },
+    ["getTags", locale, CACHE_VERSION],
+    CACHE_OPTS([CACHE_TAGS.tags]),
   )();
 }
 
@@ -141,8 +149,8 @@ export async function getWorks(locale: Lang): Promise<WorkCard[]> {
       const res = await p.find({ collection: "works", locale, limit: 100, sort: "num", depth: 1 });
       return res.docs.map(mapWork);
     },
-    ["getWorks", locale],
-    { tags: [CACHE_TAGS.works, CACHE_TAGS.tags] },
+    ["getWorks", locale, CACHE_VERSION],
+    CACHE_OPTS([CACHE_TAGS.works, CACHE_TAGS.tags]),
   )();
 }
 
@@ -160,8 +168,8 @@ export async function getWorkBySlug(locale: Lang, slug: string): Promise<WorkCar
       const doc = res.docs[0];
       return doc ? mapWork(doc as Record<string, unknown>) : null;
     },
-    ["getWorkBySlug", locale, slug],
-    { tags: [CACHE_TAGS.works, CACHE_TAGS.work(slug)] },
+    ["getWorkBySlug", locale, slug, CACHE_VERSION],
+    CACHE_OPTS([CACHE_TAGS.works, CACHE_TAGS.work(slug)]),
   )();
 }
 
@@ -179,8 +187,8 @@ export async function getSiteSettings(locale: Lang): Promise<SiteSettings> {
         socials: arr(g, "socials").map((s) => ({ label: str(s, "label"), handle: str(s, "handle"), url: str(s, "url") })),
       };
     },
-    ["getSiteSettings", locale],
-    { tags: [CACHE_TAGS.global("siteSettings")] },
+    ["getSiteSettings", locale, CACHE_VERSION],
+    CACHE_OPTS([CACHE_TAGS.global("siteSettings")]),
   )();
 }
 
@@ -203,8 +211,8 @@ export async function getHome(locale: Lang): Promise<HomeContent> {
         place: str(g, "place"),
       };
     },
-    ["getHome", locale],
-    { tags: [CACHE_TAGS.global("home")] },
+    ["getHome", locale, CACHE_VERSION],
+    CACHE_OPTS([CACHE_TAGS.global("home")]),
   )();
 }
 
@@ -215,8 +223,8 @@ export async function getLetter(locale: Lang): Promise<LetterContent> {
       const g = (await p.findGlobal({ slug: "letter", locale, depth: 0 })) as Record<string, unknown>;
       return { dek: str(g, "dek"), paragraphs: str(g, "paragraphs"), signature: str(g, "signature") };
     },
-    ["getLetter", locale],
-    { tags: [CACHE_TAGS.global("letter")] },
+    ["getLetter", locale, CACHE_VERSION],
+    CACHE_OPTS([CACHE_TAGS.global("letter")]),
   )();
 }
 
@@ -237,7 +245,7 @@ export async function getMasthead(locale: Lang): Promise<MastheadContent> {
         colophonRight: str(g, "colophonRight"),
       };
     },
-    ["getMasthead", locale],
-    { tags: [CACHE_TAGS.global("masthead")] },
+    ["getMasthead", locale, CACHE_VERSION],
+    CACHE_OPTS([CACHE_TAGS.global("masthead")]),
   )();
 }
