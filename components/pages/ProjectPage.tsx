@@ -22,7 +22,7 @@ export function ProjectPage({ work }: { work: WorkCard }) {
   const fig2 = w.gallery[0] ?? null;
 
   const tomb: [string, string, boolean][] = [
-    [t.tomb.client, w.client, true],
+    [t.tomb.client, w.context, true],
     [t.tomb.year, String(w.year), false],
     [t.tomb.medium, medium, false],
     [t.tomb.section, section, false],
@@ -36,7 +36,7 @@ export function ProjectPage({ work }: { work: WorkCard }) {
             {t.proj_section} · {w.num} / 12
           </div>
           <div className="mono" style={{ gridColumn: "7 / span 6", textAlign: "right" }}>
-            {w.client} · {w.year}
+            {w.context} · {w.year}
           </div>
         </div>
 
@@ -85,12 +85,14 @@ export function ProjectPage({ work }: { work: WorkCard }) {
               ))}
             </dl>
 
-            <div style={{ marginTop: 36 }}>
-              <div className="mono" style={{ marginBottom: 8, opacity: 0.6 }}>
-                {t.setin_label}
+            {t.setin_body && (
+              <div style={{ marginTop: 36 }}>
+                <div className="mono" style={{ marginBottom: 8, opacity: 0.6 }}>
+                  {t.setin_label}
+                </div>
+                <Html tag="p" html={t.setin_body} style={{ margin: 0, fontFamily: "var(--body)", fontSize: 14, lineHeight: 1.5 }} />
               </div>
-              <Html tag="p" html={t.setin_body} style={{ margin: 0, fontFamily: "var(--body)", fontSize: 14, lineHeight: 1.5 }} />
-            </div>
+            )}
           </aside>
 
           <div style={{ gridColumn: "5 / span 8", position: "relative" }} className="article-body reveal from-right">
@@ -120,6 +122,7 @@ export function ProjectPage({ work }: { work: WorkCard }) {
 
             <p className="dropcap">{body[0]}</p>
 
+            {w.pull && (
             <blockquote
               style={{
                 margin: "36px 0 36px",
@@ -144,6 +147,7 @@ export function ProjectPage({ work }: { work: WorkCard }) {
                 «{w.pull}»
               </p>
             </blockquote>
+            )}
 
             <figure style={{ float: "left", width: "44%", margin: "4px 28px 14px 0", shapeOutside: "margin-box" }}>
               {fig2 ? (

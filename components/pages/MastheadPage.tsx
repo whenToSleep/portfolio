@@ -13,6 +13,9 @@ export function MastheadPage({ masthead }: { masthead: MastheadContent }) {
   useReveal(lang);
   const t = STR[lang];
   const m = masthead;
+  const hasDist = m.distribution.length > 0;
+  const hasType = !!(m.typeBody && m.typeBody.trim());
+  const hasRight = hasDist || hasType;
 
   return (
     <div className="view">
@@ -40,7 +43,7 @@ export function MastheadPage({ masthead }: { masthead: MastheadContent }) {
         </p>
 
         <div className="grid-12 reveal">
-          <div style={{ gridColumn: "1 / span 6", paddingRight: 32 }}>
+          <div style={{ gridColumn: hasRight ? "1 / span 6" : "1 / -1", paddingRight: hasRight ? 32 : 0 }}>
             <div className="mono" style={{ opacity: 0.6, marginBottom: 24 }}>
               {m.studioLabel}
             </div>
@@ -90,7 +93,10 @@ export function MastheadPage({ masthead }: { masthead: MastheadContent }) {
             ))}
           </div>
 
+          {hasRight && (
           <div style={{ gridColumn: "7 / span 6", paddingLeft: 32, borderLeft: "1px solid var(--rule)" }}>
+            {hasDist && (
+            <>
             <div className="mono" style={{ opacity: 0.6, marginBottom: 24 }}>
               {m.distLabel}
             </div>
@@ -130,14 +136,19 @@ export function MastheadPage({ masthead }: { masthead: MastheadContent }) {
                 </li>
               ))}
             </ul>
+            </>
+            )}
 
-            <div style={{ marginTop: 56 }}>
+            {hasType && (
+            <div style={{ marginTop: hasDist ? 56 : 0 }}>
               <div className="mono" style={{ opacity: 0.6, marginBottom: 16 }}>
                 {m.typeLabel}
               </div>
               <Html tag="p" html={m.typeBody} style={{ fontFamily: "var(--body)", fontSize: 15, lineHeight: 1.62, margin: 0 }} />
             </div>
+            )}
           </div>
+          )}
         </div>
 
         <div className="footer-imprint">

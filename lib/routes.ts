@@ -8,14 +8,15 @@ export function isLocale(v: string | undefined): v is Lang {
   return v === "en" || v === "uk";
 }
 
-/** Default project route targets the first work (matches the prototype nav). */
-export const DEFAULT_WORK_SLUG = workSlug(WORKS[0]);
+/** Default project route targets the first work, if any exists yet. */
+export const DEFAULT_WORK_SLUG = WORKS[0] ? workSlug(WORKS[0]) : "";
 
-/** Logical (locale-less) paths. useNavigate() prepends the active locale. */
+/** Logical (locale-less) paths. useNavigate() prepends the active locale.
+ *  With no works yet, "project" falls back to the Works page (no dead link). */
 export const ROUTES: Record<PageKey, string> = {
   home: "/",
   issue: "/works",
-  project: `/work/${DEFAULT_WORK_SLUG}`,
+  project: DEFAULT_WORK_SLUG ? `/work/${DEFAULT_WORK_SLUG}` : "/works",
   letter: "/letter",
   masthead: "/masthead",
 };

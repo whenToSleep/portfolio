@@ -21,6 +21,7 @@ export function IssuePage({ works, tags }: { works: WorkCard[]; tags: TagItem[] 
     () => (filter === "All" ? works : works.filter((w) => w.tags.some((tg) => tg.value === filter))),
     [filter, works],
   );
+  const hasWorks = works.length > 0;
 
   return (
     <div className="view">
@@ -43,44 +44,47 @@ export function IssuePage({ works, tags }: { works: WorkCard[]; tags: TagItem[] 
           {t.issue_dek}
         </p>
 
-        {/* Tag filter — text links, accent for active */}
-        <div
-          className="reveal"
-          style={{
-            display: "flex",
-            alignItems: "baseline",
-            gap: 22,
-            flexWrap: "wrap",
-            paddingBottom: 22,
-            borderBottom: "2px solid var(--ink)",
-          }}
-        >
-          <span className="mono" style={{ opacity: 0.6 }}>
-            {t.filter_label}
-          </span>
-          <a
-            className={`e-link sub ${filter === "All" ? "is-active" : ""}`}
-            style={{ fontSize: 13 }}
-            onClick={() => setFilter("All")}
+        {/* Tag filter — text links, accent for active (hidden until works exist) */}
+        {hasWorks && (
+          <div
+            className="reveal"
+            style={{
+              display: "flex",
+              alignItems: "baseline",
+              gap: 22,
+              flexWrap: "wrap",
+              paddingBottom: 22,
+              borderBottom: "2px solid var(--ink)",
+            }}
           >
-            {t.filter_all}
-          </a>
-          {tags.map((tag) => (
+            <span className="mono" style={{ opacity: 0.6 }}>
+              {t.filter_label}
+            </span>
             <a
-              key={tag.value}
-              className={`e-link sub ${filter === tag.value ? "is-active" : ""}`}
+              className={`e-link sub ${filter === "All" ? "is-active" : ""}`}
               style={{ fontSize: 13 }}
-              onClick={() => setFilter(tag.value)}
+              onClick={() => setFilter("All")}
             >
-              {tag.label}
+              {t.filter_all}
             </a>
-          ))}
-          <span className="mono" style={{ opacity: 0.5, marginLeft: "auto" }}>
-            {t.showing} {list.length} {t.of} {works.length} {t.works_word}
-          </span>
-        </div>
+            {tags.map((tag) => (
+              <a
+                key={tag.value}
+                className={`e-link sub ${filter === tag.value ? "is-active" : ""}`}
+                style={{ fontSize: 13 }}
+                onClick={() => setFilter(tag.value)}
+              >
+                {tag.label}
+              </a>
+            ))}
+            <span className="mono" style={{ opacity: 0.5, marginLeft: "auto" }}>
+              {t.showing} {list.length} {t.of} {works.length} {t.works_word}
+            </span>
+          </div>
+        )}
 
-        <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
+        {hasWorks ? (
+          <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
           {list.map((w, i) => {
             const isHover = hovered === w.id;
             const dimmed = hovered !== null && !isHover;
@@ -132,7 +136,7 @@ export function IssuePage({ works, tags }: { works: WorkCard[]; tags: TagItem[] 
                   >
                     {w.title}
                     <span style={{ fontStyle: "italic", opacity: 0.55, fontSize: 18, marginLeft: 10 }}>
-                      — {w.client}
+                      — {w.context}
                     </span>
                   </div>
                   <div style={{ gridColumn: "9 / span 1", textAlign: "right" }} className="mono">
@@ -168,7 +172,23 @@ export function IssuePage({ works, tags }: { works: WorkCard[]; tags: TagItem[] 
               </li>
             );
           })}
-        </ul>
+          </ul>
+        ) : (
+          <div
+            className="reveal"
+            style={{
+              borderTop: "1px solid var(--rule)",
+              borderBottom: "1px solid var(--rule)",
+              padding: "64px 0",
+              fontFamily: "var(--display)",
+              fontSize: "clamp(1.375rem, 1.1rem + 1.3vw, 1.75rem)",
+              fontStyle: "italic",
+              opacity: 0.7,
+            }}
+          >
+            {t.issue_empty}
+          </div>
+        )}
 
         <div style={{ marginTop: 48, display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
           <div className="mono" style={{ opacity: 0.7 }}>
@@ -178,17 +198,21 @@ export function IssuePage({ works, tags }: { works: WorkCard[]; tags: TagItem[] 
             <a className="e-link sub" data-cursor="Open" style={{ fontSize: 11 }} onClick={() => navigate(ROUTES.home)}>
               {t.pag_cover}
             </a>
-            <span className="mono" style={{ color: "var(--accent)" }}>
-              · 02 ·
-            </span>
-            <a
-              className="e-link sub"
-              data-cursor="Read"
-              style={{ fontSize: 11 }}
-              onClick={() => navigate(`/work/${(list[0] || works[0])?.slug ?? ""}`)}
-            >
-              {t.pag_project}
-            </a>
+            {hasWorks && (
+              <>
+                <span className="mono" style={{ color: "var(--accent)" }}>
+                  · 02 ·
+                </span>
+                <a
+                  className="e-link sub"
+                  data-cursor="Read"
+                  style={{ fontSize: 11 }}
+                  onClick={() => navigate(`/work/${(list[0] || works[0])?.slug ?? ""}`)}
+                >
+                  {t.pag_project}
+                </a>
+              </>
+            )}
           </div>
         </div>
       </div>

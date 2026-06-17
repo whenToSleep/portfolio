@@ -50,7 +50,7 @@ export const Works: CollectionConfig = {
               type: "row",
               fields: [
                 { name: "num", type: "text", label: "№", admin: { width: "33%", description: "01–12" } },
-                { name: "client", type: "text", label: "Замовник", admin: { width: "34%" } },
+                { name: "client", type: "text", label: "Контекст", admin: { width: "34%", description: "Видання / замовник / навчальний проєкт" } },
                 { name: "year", type: "number", label: "Рік", admin: { width: "33%" } },
               ],
             },

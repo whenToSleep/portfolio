@@ -20,8 +20,27 @@ const headers = () => ({
   ...(token ? { Authorization: `JWT ${token}` } : {}),
 });
 
+// Neon over a dev server can stall/drop a connection mid-request; retry with a
+// per-attempt timeout so a transient blip doesn't abort the whole (idempotent) seed.
+async function fetchRetry(url: string, init?: RequestInit, attempts = 6): Promise<Response> {
+  let lastErr: unknown;
+  for (let i = 0; i < attempts; i++) {
+    const ctrl = new AbortController();
+    const to = setTimeout(() => ctrl.abort(), 30000);
+    try {
+      return await fetch(url, { ...init, signal: ctrl.signal });
+    } catch (e) {
+      lastErr = e;
+      await new Promise((r) => setTimeout(r, 2000 * (i + 1)));
+    } finally {
+      clearTimeout(to);
+    }
+  }
+  throw lastErr;
+}
+
 async function api(path: string, init?: RequestInit) {
-  const res = await fetch(`${BASE}${path}`, { ...init, headers: { ...headers(), ...(init?.headers || {}) } });
+  const res = await fetchRetry(`${BASE}${path}`, { ...init, headers: { ...headers(), ...(init?.headers || {}) } });
   const json = await res.json().catch(() => ({}));
   if (!res.ok) {
     throw new Error(`${init?.method || "GET"} ${path} -> ${res.status}: ${JSON.stringify(json).slice(0, 300)}`);
@@ -30,7 +49,7 @@ async function api(path: string, init?: RequestInit) {
 }
 
 async function login() {
-  const res = await fetch(`${BASE}/api/users/login`, {
+  const res = await fetchRetry(`${BASE}/api/users/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email: EMAIL, password: PASSWORD }),
@@ -46,6 +65,15 @@ async function findOne(collection: string, field: string, value: string) {
   const q = `/api/${collection}?where[${field}][equals]=${encodeURIComponent(value)}&limit=1&depth=0`;
   const json = await api(q);
   return json.docs?.[0] ?? null;
+}
+
+async function listAll(collection: string): Promise<Record<string, unknown>[]> {
+  const json = await api(`/api/${collection}?limit=1000&depth=0`);
+  return (json.docs as Record<string, unknown>[]) ?? [];
+}
+
+async function del(collection: string, id: number | string) {
+  await api(`/api/${collection}/${id}`, { method: "DELETE" });
 }
 
 async function seedTags() {
@@ -69,7 +97,31 @@ async function seedTags() {
   return map;
 }
 
+/** Remove CMS tags/works that are no longer in lib/content.ts. */
+async function pruneTags() {
+  const keep = new Set<string>(TAG_ORDER as string[]);
+  let removed = 0;
+  for (const doc of await listAll("tags")) {
+    if (!keep.has(doc.value as string)) {
+      await del("tags", doc.id as number | string);
+      removed++;
+    }
+  }
+  if (removed) console.log(`✓ tags pruned: ${removed}`);
+}
+
 async function seedWorks(tagMap: Record<string, number | string>) {
+  // Prune CMS works that are no longer in WORKS (with WORKS empty, clears the demo set).
+  const keepSlugs = new Set(WORKS.map((w) => slugify(w.title.en)));
+  let pruned = 0;
+  for (const doc of await listAll("works")) {
+    if (!keepSlugs.has(doc.slug as string)) {
+      await del("works", doc.id as number | string);
+      pruned++;
+    }
+  }
+  if (pruned) console.log(`✓ works pruned: ${pruned}`);
+
   let created = 0;
   let updated = 0;
   for (const w of WORKS) {
@@ -78,7 +130,7 @@ async function seedWorks(tagMap: Record<string, number | string>) {
     const en = {
       title: w.title.en,
       num: w.num,
-      client: w.client,
+      client: w.context,
       year: w.year,
       plate: w.plate,
       tags: tagIds,
@@ -174,6 +226,7 @@ async function main() {
   await login();
   const tagMap = await seedTags();
   await seedWorks(tagMap);
+  await pruneTags();
   await seedGlobals();
   console.log("Done.");
   process.exit(0);

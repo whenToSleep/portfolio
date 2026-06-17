@@ -1,6 +1,6 @@
 "use client";
 
-import { STR } from "@/lib/content";
+import { STR, WORKS } from "@/lib/content";
 import { ROUTES } from "@/lib/routes";
 import type { HomeContent, SiteSettings } from "@/lib/payload";
 import { useReveal } from "@/hooks/useReveal";
@@ -94,9 +94,11 @@ export function HomePage({ home, site }: { home: HomeContent; site: SiteSettings
                 </em>
                 {home.coverNote}
               </span>
-              <a className="e-link" data-cursor="Read" onClick={() => navigate(ROUTES.project)}>
-                {home.readProject}
-              </a>
+              {WORKS.length > 0 && (
+                <a className="e-link" data-cursor="Read" onClick={() => navigate(ROUTES.project)}>
+                  {home.readProject}
+                </a>
+              )}
             </div>
           </div>
         </div>
@@ -133,30 +135,32 @@ export function HomePage({ home, site }: { home: HomeContent; site: SiteSettings
                 {site.email}
               </a>
             </div>
-            <div style={{ gridColumn: "10 / span 3" }}>
-              <div className="mono" style={{ opacity: 0.6, marginBottom: 14 }}>
-                {t.home_follow_label}
+            {site.socials.length > 0 && (
+              <div style={{ gridColumn: "10 / span 3" }}>
+                <div className="mono" style={{ opacity: 0.6, marginBottom: 14 }}>
+                  {t.home_follow_label}
+                </div>
+                <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 10 }}>
+                  {site.socials.map((s, i) => (
+                    <li key={i} style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12 }}>
+                      <span className="sub" style={{ fontSize: 11 }}>
+                        {s.label}
+                      </span>
+                      <a
+                        className="e-link"
+                        data-cursor="Visit"
+                        href={s.url}
+                        target="_blank"
+                        rel="noopener"
+                        style={{ fontFamily: "var(--body)", fontSize: 15, fontStyle: "italic" }}
+                      >
+                        {s.handle}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 10 }}>
-                {site.socials.map((s, i) => (
-                  <li key={i} style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12 }}>
-                    <span className="sub" style={{ fontSize: 11 }}>
-                      {s.label}
-                    </span>
-                    <a
-                      className="e-link"
-                      data-cursor="Visit"
-                      href={s.url}
-                      target="_blank"
-                      rel="noopener"
-                      style={{ fontFamily: "var(--body)", fontSize: 15, fontStyle: "italic" }}
-                    >
-                      {s.handle}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            )}
           </div>
           <hr className="hrule" />
           <div

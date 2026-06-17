@@ -1,7 +1,8 @@
 // ============================================================
-// Data + bilingual (EN / UK) content for the journal.
-// Ported 1:1 from the prototype (portfolio.html). Temporary home for
-// content — replaced by Payload CMS queries in Phase 4.
+// Data + bilingual (UK / EN) content for the portfolio.
+// Real content: Anna Starostina, Lviv (see CONTENT-IMPLEMENTATION.md).
+// STR is read directly by the client components (UI chrome); Home/Letter/
+// Masthead/SiteSettings body content is served from Payload (seeded from here).
 // L(field, lang) returns the right string; plain strings pass through.
 // ============================================================
 
@@ -23,90 +24,74 @@ export interface Artist {
 }
 
 export const ARTIST: Artist = {
-  name: { en: "Anya Volkov", uk: "Аня Волкова" },
-  city: { en: "Tbilisi", uk: "Тбілісі" },
+  name: { en: "Anna Starostina", uk: "Анна Старостіна" },
+  city: { en: "Lviv", uk: "Львів" },
   year: 2026,
-  email: "studio@anyavolkov.work",
-  commissions: "commissions@anyavolkov.work",
-  press: "press@anyavolkov.work",
+  email: "t8ananas@gmail.com",
+  commissions: "t8ananas@gmail.com",
+  press: "t8ananas@gmail.com",
 };
 
 // --- Tag vocabulary (medium / format) used for Index filtering ---
-export type TagKey = "Traditional" | "Digital" | "Editorial" | "Poster" | "Book";
+export type TagKey = "Traditional" | "Digital" | "Book" | "Poster" | "Playbill" | "Cover";
 
 export const TAGS: Record<TagKey, Localized> = {
-  Traditional: { en: "Traditional", uk: "Традиційна" },
+  Traditional: { en: "Traditional", uk: "Традиційна графіка" },
   Digital: { en: "Digital", uk: "Діджитал" },
-  Editorial: { en: "Editorial", uk: "Редакційна" },
-  Poster: { en: "Poster", uk: "Постери" },
-  Book: { en: "Book", uk: "Книги" },
+  Book: { en: "Book illustration", uk: "Книжкова ілюстрація" },
+  Poster: { en: "Posters", uk: "Постери" },
+  Playbill: { en: "Playbills", uk: "Афіші" },
+  Cover: { en: "Covers", uk: "Обкладинки" },
 };
-export const TAG_ORDER: TagKey[] = ["Traditional", "Digital", "Editorial", "Poster", "Book"];
+export const TAG_ORDER: TagKey[] = ["Traditional", "Digital", "Book", "Poster", "Playbill", "Cover"];
 
 // --- Works (the Index) ---
 export interface Work {
   id: number;
   num: string;
   title: Localized;
-  client: string;
+  context: string;
   year: number;
   plate: number;
   tags: TagKey[];
 }
 
-export const WORKS: Work[] = [
-  { id: 1,  num: "01", title: { en: "A Letter to the Garden",       uk: "Лист до саду" },              client: "The New York Times",   year: 2025, plate: 1, tags: ["Traditional", "Editorial"] },
-  { id: 2,  num: "02", title: { en: "Slow Burn",                    uk: "Повільне горіння" },          client: "The Atlantic",         year: 2025, plate: 2, tags: ["Traditional", "Editorial"] },
-  { id: 3,  num: "03", title: { en: "Notes from a Northern Spring", uk: "Нотатки північної весни" },   client: "Penguin Press",        year: 2024, plate: 3, tags: ["Traditional", "Book"] },
-  { id: 4,  num: "04", title: { en: "The Algorithm Forgets",        uk: "Алгоритм забуває" },          client: "Wired",                year: 2024, plate: 4, tags: ["Digital", "Editorial"] },
-  { id: 5,  num: "05", title: { en: "Tbilisi Film Festival",        uk: "Тбіліський кінофестиваль" },  client: "TIFF",                 year: 2024, plate: 1, tags: ["Digital", "Poster"] },
-  { id: 6,  num: "06", title: { en: "Mothers, Daughters",           uk: "Матері, доньки" },            client: "The Guardian Weekly",  year: 2024, plate: 2, tags: ["Traditional", "Editorial"] },
-  { id: 7,  num: "07", title: { en: "Granta 168: The Slow Lane",    uk: "Granta 168: Повільна смуга" },client: "Granta",               year: 2023, plate: 3, tags: ["Traditional", "Book"] },
-  { id: 8,  num: "08", title: { en: "A Year of Sundays",            uk: "Рік неділь" },                client: "Self-published",       year: 2023, plate: 4, tags: ["Traditional", "Poster"] },
-  { id: 9,  num: "09", title: { en: "On Patience",                  uk: "Про терпіння" },              client: "The Paris Review",     year: 2023, plate: 1, tags: ["Traditional", "Editorial"] },
-  { id: 10, num: "10", title: { en: "Pirosmani Reissue",            uk: "Піросмані. Перевидання" },    client: "Sulakauri Publishing", year: 2023, plate: 2, tags: ["Digital", "Book"] },
-  { id: 11, num: "11", title: { en: "The Long Walk Home",           uk: "Довга дорога додому" },       client: "Faber & Faber",        year: 2022, plate: 3, tags: ["Traditional", "Book"] },
-  { id: 12, num: "12", title: { en: "Inheritance",                  uk: "Спадок" },                    client: "Harper's Magazine",    year: 2022, plate: 4, tags: ["Digital", "Editorial"] },
-];
+// Real works are not published yet (portfolio in progress) — empty list renders
+// the Works page's empty state; /work/[slug] pages come from the CMS once added.
+export const WORKS: Work[] = [];
 
-// --- Project article (short) — content is generic so any work can open it ---
+// --- Project article (short) — neutral defaults until real works are added ---
 export const PROJECT = {
   subtitle: {
-    en: "A short series of plates for an essay on the patient labour of tending things you may never harvest.",
-    uk: "Коротка серія робіт до есею про терпляву працю — доглядати те, чого, можливо, ніколи не збереш.",
+    en: "Work page — description coming soon.",
+    uk: "Сторінка роботи — опис буде додано.",
   },
   body: {
-    en: [
-      "The commission began, as most do, with a brief that was generous and slightly impossible — and a deadline that was neither.",
-      "I work slowly and on purpose. What survives the final edit is usually the quietest option: the one that leaves the reader something to finish.",
-    ],
-    uk: [
-      "Замовлення почалося, як майже всі, зі щедрого й трохи неможливого брифа — і дедлайну, що не був ані тим, ані іншим.",
-      "Я працюю повільно і свідомо. До фінального відбору зазвичай доживає найтихіший варіант — той, що лишає читачеві щось дозавершити.",
-    ],
+    en: ["A description of this work will be added soon."],
+    uk: ["Опис цієї роботи з'явиться згодом."],
   },
   pull: {
-    en: "What survives the edit is usually the quietest option.",
-    uk: "До фінального відбору доживає найтихіший варіант.",
+    en: "",
+    uk: "",
   },
 } satisfies Record<"subtitle" | "pull", Localized> & { body: Record<Lang, string[]> };
 
-// --- Letter from the artist (short) ---
+// --- About / "Про мене" (the Letter global) ---
 export const LETTER = {
   dek: {
-    en: "On working slowly, in a small room, in a year that wanted things faster.",
-    uk: "Про те, як працювати повільно, у маленькій кімнаті, у рік, що хотів усього швидше.",
+    en: "On why I draw and how I work.",
+    uk: "Про те, навіщо я малюю і як працюю.",
   },
   paragraphs: {
     en: [
-      "I trained as a printmaker, which is to say I trained to wait. A plate does not negotiate; it tells you, after the acid bath, whether you guessed right.",
-      "My studio is one room in a building from 1903 in Sololaki. I read in the mornings, cook in the evenings, and keep the middle of the day for drawing.",
-      "I think of an illustration as a small contract with a reader: I agree not to waste your attention; you agree to bring some of your own. If you are here looking for a collaborator, please write. I answer letters slowly, on purpose.",
+      "For as long as I can remember, I've wanted to picture what the eye can't see. To me an artist is someone who conveys their feelings, thoughts and imagination visually — through composition, the psychology of colour, and the way an image works directly on perception.",
+      "I study at the Institute of Printing and Media Technologies, in the Book Graphics department. It's where I learned book layout and design, drawing and composition — and that's exactly what brings me closer to my goals.",
+      "My process depends on the task, but it usually starts with the layout — a quick sketch of the main composition. Then I refine the details step by step, choose the right materials, and the idea comes to life. I'm open to book illustration, posters and playbills, advertising visuals, and book and website design — write to me if you'd like to work together.",
     ],
     uk: [
-      "Я навчалася друкарській справі — тобто навчалася чекати. Друкарська форма не торгується: після кислотної ванни вона просто каже, чи ти вгадала.",
-      "Моя майстерня — одна кімната в будинку 1903 року в Сололакі. Зранку читаю, увечері готую, а середину дня лишаю для малювання.",
-      "Я думаю про ілюстрацію як про невелику угоду з читачем: я обіцяю не марнувати вашу увагу; ви обіцяєте додати трохи власної. Якщо ви тут у пошуку колаборації — напишіть. Я відповідаю на листи повільно і свідомо.",
+      "Скільки себе пам'ятаю, мені хотілося зобразити те, чого не побачиш очима. Для мене художник — це той, хто передає візуально свої почуття, думки й уяву: через композицію, психологію кольору, через те, як зображення напряму впливає на сприйняття.",
+      "Навчаюся в Інституті поліграфії та медійних технологій на кафедрі книжкової графіки. Тут я опанувала верстку й дизайн книги, графіку та композицію — і саме це наближає мене до моїх цілей.",
+      "Процес залежить від задачі, але зазвичай усе починається з компоновки — швидкого ескізу основної композиції. Далі поетапно уточнюю деталі, підбираю матеріали, і ідея оживає. Я відкрита до книжкової ілюстрації, плакатів і афіш, рекламних інтеграцій, дизайну книг та сайтів — пишіть, якщо хочете попрацювати разом.",
     ],
   },
 } satisfies { dek: Localized; paragraphs: Record<Lang, string[]> };
@@ -142,6 +127,7 @@ export interface UIStrings {
   issue_meta_r: string;
   issue_title: string;
   issue_dek: string;
+  issue_empty: string;
   filter_all: string;
   filter_label: string;
   showing: string;
@@ -192,185 +178,163 @@ export interface UIStrings {
 
 export const STR: Record<Lang, UIStrings> = {
   en: {
-    journal: "An Illustrator's Journal",
-    nav: { home: "Cover", issue: "Index", project: "Project", letter: "Letter", masthead: "Masthead" },
-    folio: "№ 01 · 2026 · Tbilisi",
+    journal: "Illustrator's Portfolio",
+    nav: { home: "Home", issue: "Works", project: "Work", letter: "About", masthead: "Contacts" },
+    folio: "Lviv · 2026",
     dayNight: { day: "Day", night: "Night" },
 
     // Home
-    home_meta_l: "Illustrator & Printmaker",
-    home_meta_r: "Lviv · Printed on the open web",
+    home_meta_l: "Book graphics student",
+    home_meta_r: "Lviv, Ukraine",
     home_statement_label: "— Artist's Statement —",
-    home_statement: "I draw <em>slowly</em>, mostly in gouache, sometimes in pencil, occasionally on a screen — for editors, publishers, and anyone still in the business of holding a reader's attention for longer than a glance.",
-    home_fig: "Cover plate · A Letter to the Garden · 2025",
-    fig_lead: "Fig. 1 — ",
-    home_cover_note: "The Cover, March 2025",
-    read_project: "Read the full project →",
+    home_statement: "I work in ink, liner, pencil and digital — drawn most of all to <em>people</em> and the mysterious. What matters to me is conveying the feelings that surface as I draw: an artist's task is to show meaning through the image itself, without words.",
+    home_fig: "Cover — coming soon",
+    fig_lead: "",
+    home_cover_note: "Cover — coming soon",
+    read_project: "Read project →",
     home_avail_label: "— Currently —",
-    home_avail: "Open for new commissions from June 2026 onward.",
+    home_avail: "Open to commissions, collaborations, internships and exhibitions.",
     home_reach_label: "— Get in touch —",
     home_follow_label: "— Follow —",
-    home_social: [
-      ["Instagram", "@anya.volkov", "https://instagram.com"],
-      ["Are.na", "anya-volkov", "https://are.na"],
-    ],
-    home_copyright: "© Anya Volkov · 2026",
-    home_place: "Lviv · Printed on the open web",
+    home_social: [],
+    home_copyright: "© Anna Starostina · 2026",
+    home_place: "Lviv",
 
     // Issue
-    issue_meta_l: "Section II · The Index · Twelve works",
-    issue_meta_r: "Filter by medium · Listed without hierarchy",
-    issue_title: "The <em>Index</em>",
-    issue_dek: "A complete list of commissioned & personal work — 2022 through 2025.",
+    issue_meta_l: "Selected work",
+    issue_meta_r: "Filter by medium",
+    issue_title: "<em>Works</em>",
+    issue_dek: "Student and personal work.",
+    issue_empty: "Works coming soon — portfolio in progress.",
     filter_all: "All",
     filter_label: "Filter —",
     showing: "Showing",
     of: "of",
     works_word: "works",
-    page_of: "Page 2 of 5 — The Index",
-    pag_cover: "← Cover",
-    pag_project: "Project →",
+    page_of: "Works",
+    pag_cover: "← Home",
+    pag_project: "Work →",
 
     // Project
-    proj_section: "Section III · A Project",
-    tomb_title: "— Tombstone —",
-    tomb: { client: "Client", year: "Year", medium: "Medium", section: "Section" },
-    medium_trad: "Gouache & graphite on Arches paper",
-    medium_digi: "Digital · Procreate & risograph proof",
-    setin_label: "— Set in —",
-    setin_body: "Fraunces 144 (display)<br/>Bricolage Grotesque (subhead)<br/>Source Serif 4 (body)",
-    fig1_cap: "Gouache & graphite on paper. The plate chosen for the opening spread.",
-    fig4_cap: "A second plate — quieter, and the one that took the longest.",
-    byline: "— A.V., Sololaki",
-    back_index: "← Back to the Index",
+    proj_section: "Work",
+    tomb_title: "— Details —",
+    tomb: { client: "Context", year: "Year", medium: "Medium", section: "Section" },
+    medium_trad: "Ink, liner and pencil on paper",
+    medium_digi: "Digital",
+    setin_label: "",
+    setin_body: "",
+    fig1_cap: "An illustration from the series.",
+    fig4_cap: "Another illustration.",
+    byline: "— A.S., Lviv",
+    back_index: "← Back to works",
     continue: "Continue —",
-    cont_letter: "A Letter from the Artist →",
+    cont_letter: "About the artist →",
 
     // Letter
-    letter_section: "Section IV · Editorial · From the Studio",
-    letter_place: "Sololaki, Tbilisi · Spring, 2026",
-    letter_title: "A <em>Letter</em>.",
-    letter_sign: "— Anya Volkov, Tbilisi, 2026",
-    pag_project_back: "← The Project",
-    pag_masthead: "Masthead →",
+    letter_section: "About",
+    letter_place: "Lviv · 2026",
+    letter_title: "<em>About</em> me",
+    letter_sign: "— Anna Starostina, Lviv, 2026",
+    pag_project_back: "← Work",
+    pag_masthead: "Contacts →",
 
     // Masthead
-    mast_section: "Section V · Imprint · Correspondence",
-    page5: "Page 5 of 5",
-    mast_title: "<em>Mast</em>head",
-    mast_dek: "The people, the addresses, the typefaces.",
-    studio_label: "— The Studio —",
+    mast_section: "Contacts",
+    page5: "Contacts",
+    mast_title: "<em>Con</em>tact",
+    mast_dek: "How to reach me.",
+    studio_label: "— Contact —",
     roles: [
-      ["Illustrator / Founder", "Anya Volkov", "studio@anyavolkov.work"],
-      ["Commissions & Editorial", "All enquiries", "commissions@anyavolkov.work"],
-      ["Press & Interviews", "Words about pictures", "press@anyavolkov.work"],
-      ["Studio Assistant", "Lia Khatchaturian", "lia@anyavolkov.work"],
-      ["Representation", "Currently self-represented", "—"],
+      ["Contact", "Anna Starostina", "t8ananas@gmail.com"],
+      ["Commissions & collaboration", "All enquiries", "t8ananas@gmail.com"],
     ],
-    dist_label: "— Distribution —",
-    dist: [
-      ["Instagram", "@anya.volkov", "https://instagram.com"],
-      ["Are.na", "anya-volkov", "https://are.na"],
-      ["It's Nice That", "Profile", "https://itsnicethat.com"],
-      ["Newsletter", "Quarterly, by post and by email", "#"],
-      ["Print shop", "Limited risograph editions", "#"],
-    ],
-    type_label: "— A Note on the Type —",
-    type_body: "Set in <em>Fraunces</em> for display, <em>Bricolage Grotesque</em> for subheads, and <em>Source Serif 4</em> for the body. Numerals are <em>JetBrains Mono</em>. The accent is a typographical red, RGB 221 · 54 · 36.",
-    colophon_l: "Set in Fraunces & Söhne. Printed on the open web, Tbilisi, 2026.",
-    colophon_r: "© Anya Volkov · Reproduction by permission only.",
-    return_cover: "← Return to the Cover",
+    dist_label: "— Follow —",
+    dist: [],
+    type_label: "",
+    type_body: "",
+    colophon_l: "Lviv, 2026.",
+    colophon_r: "© Anna Starostina · Reproduction by permission only.",
+    return_cover: "← Back to home",
   },
 
   uk: {
-    journal: "Журнал ілюстраторки",
-    nav: { home: "Обкладинка", issue: "Зміст", project: "Робота", letter: "Лист", masthead: "Імпринт" },
-    folio: "№ 01 · 2026 · Тбілісі",
+    journal: "Портфоліо ілюстраторки",
+    nav: { home: "Головна", issue: "Роботи", project: "Робота", letter: "Про мене", masthead: "Контакти" },
+    folio: "Львів · 2026",
     dayNight: { day: "День", night: "Ніч" },
 
     // Home
-    home_meta_l: "Ілюстраторка та друкарка",
-    home_meta_r: "Львів · Надруковано у відкритому вебі",
+    home_meta_l: "Студентка книжкової графіки",
+    home_meta_r: "Львів, Україна",
     home_statement_label: "— Художня заява —",
-    home_statement: "Я малюю <em>повільно</em> — переважно гуашшю, інколи олівцем, подеколи на екрані — для редакцій, видавців і всіх, хто ще займається тим, щоб утримати увагу читача довше за один погляд.",
-    home_fig: "Обкладинка · «Лист до саду» · 2025",
-    fig_lead: "Іл. 1 — ",
-    home_cover_note: "Обкладинка, березень 2025",
+    home_statement: "Малюю тушшю, лінером, олівцем та в діджиталі — найбільше люблю <em>людей</em> і містику. Головне для мене — передати ті відчуття, що виникають у процесі: завдання художника показати сенс ілюстративно, без слів.",
+    home_fig: "Обкладинка — незабаром",
+    fig_lead: "",
+    home_cover_note: "Обкладинка — незабаром",
     read_project: "Читати про роботу →",
     home_avail_label: "— Зараз —",
-    home_avail: "Відкрита до нових замовлень з червня 2026 року.",
+    home_avail: "Відкрита до замовлень, колаборацій, практики та участі у виставках.",
     home_reach_label: "— Зв'язок —",
     home_follow_label: "— Слідкувати —",
-    home_social: [
-      ["Instagram", "@anya.volkov", "https://instagram.com"],
-      ["Are.na", "anya-volkov", "https://are.na"],
-    ],
-    home_copyright: "© Аня Волкова · 2026",
-    home_place: "Львів · Надруковано у відкритому вебі",
+    home_social: [],
+    home_copyright: "© Анна Старостіна · 2026",
+    home_place: "Львів",
 
     // Issue
-    issue_meta_l: "Розділ II · Зміст · Дванадцять робіт",
-    issue_meta_r: "Фільтр за технікою · Перелік без ієрархії",
-    issue_title: "<em>Зміст</em>",
-    issue_dek: "Повний перелік замовлених і особистих робіт — 2022–2025.",
+    issue_meta_l: "Вибрані роботи",
+    issue_meta_r: "Фільтр за технікою",
+    issue_title: "<em>Роботи</em>",
+    issue_dek: "Навчальні та особисті роботи.",
+    issue_empty: "Роботи незабаром — портфоліо наповнюється.",
     filter_all: "Усі",
     filter_label: "Фільтр —",
     showing: "Показано",
     of: "із",
     works_word: "робіт",
-    page_of: "Сторінка 2 з 5 — Зміст",
-    pag_cover: "← Обкладинка",
+    page_of: "Роботи",
+    pag_cover: "← Головна",
     pag_project: "Робота →",
 
     // Project
-    proj_section: "Розділ III · Робота",
+    proj_section: "Робота",
     tomb_title: "— Реквізити —",
-    tomb: { client: "Замовник", year: "Рік", medium: "Техніка", section: "Розділ" },
-    medium_trad: "Гуаш і графіт на папері Arches",
-    medium_digi: "Діджитал · Procreate і ризограф-проба",
-    setin_label: "— Набрано шрифтами —",
-    setin_body: "Fraunces 144 (заголовки)<br/>Bricolage Grotesque (підзаголовки)<br/>Source Serif 4 (текст)",
-    fig1_cap: "Гуаш і графіт на папері. Робота, обрана для відкриваючого розвороту.",
-    fig4_cap: "Друга робота — тихіша, і та, що забрала найбільше часу.",
-    byline: "— А.В., Сололакі",
-    back_index: "← Назад до Змісту",
+    tomb: { client: "Контекст", year: "Рік", medium: "Техніка", section: "Розділ" },
+    medium_trad: "Туш, лінер, олівець на папері",
+    medium_digi: "Діджитал",
+    setin_label: "",
+    setin_body: "",
+    fig1_cap: "Ілюстрація з серії.",
+    fig4_cap: "Ще одна ілюстрація.",
+    byline: "— А.С., Львів",
+    back_index: "← Назад до робіт",
     continue: "Далі —",
-    cont_letter: "Лист від художниці →",
+    cont_letter: "Про художницю →",
 
     // Letter
-    letter_section: "Розділ IV · Редакційна колонка · З майстерні",
-    letter_place: "Сололакі, Тбілісі · Весна, 2026",
-    letter_title: "<em>Лист</em>.",
-    letter_sign: "— Аня Волкова, Тбілісі, 2026",
+    letter_section: "Про мене",
+    letter_place: "Львів · 2026",
+    letter_title: "<em>Про</em> мене",
+    letter_sign: "— Анна Старостіна, Львів, 2026",
     pag_project_back: "← Робота",
-    pag_masthead: "Імпринт →",
+    pag_masthead: "Контакти →",
 
     // Masthead
-    mast_section: "Розділ V · Імпринт · Листування",
-    page5: "Сторінка 5 з 5",
-    mast_title: "<em>Ім</em>принт",
-    mast_dek: "Люди, адреси, шрифти.",
-    studio_label: "— Майстерня —",
+    mast_section: "Контакти",
+    page5: "Контакти",
+    mast_title: "<em>Кон</em>такти",
+    mast_dek: "Як зі мною зв'язатися.",
+    studio_label: "— Контакти —",
     roles: [
-      ["Ілюстраторка / Засновниця", "Аня Волкова", "studio@anyavolkov.work"],
-      ["Замовлення та редакції", "Усі запити", "commissions@anyavolkov.work"],
-      ["Преса та інтерв'ю", "Слова про малюнки", "press@anyavolkov.work"],
-      ["Асистентка майстерні", "Лія Хачатурян", "lia@anyavolkov.work"],
-      ["Представництво", "Наразі без агента", "—"],
+      ["Зв'язок", "Анна Старостіна", "t8ananas@gmail.com"],
+      ["Замовлення та співпраця", "Усі запити", "t8ananas@gmail.com"],
     ],
-    dist_label: "— Поширення —",
-    dist: [
-      ["Instagram", "@anya.volkov", "https://instagram.com"],
-      ["Are.na", "anya-volkov", "https://are.na"],
-      ["It's Nice That", "Профіль", "https://itsnicethat.com"],
-      ["Розсилка", "Щокварталу, поштою та електронкою", "#"],
-      ["Друкарня", "Обмежені ризограф-видання", "#"],
-    ],
-    type_label: "— Про шрифт —",
-    type_body: "Набрано <em>Fraunces</em> для заголовків, <em>Bricolage Grotesque</em> для підзаголовків і <em>Source Serif 4</em> для основного тексту. Цифри — <em>JetBrains Mono</em>. Акцент — типографський червоний, RGB 221 · 54 · 36.",
-    colophon_l: "Набрано Fraunces і Söhne. Надруковано у відкритому вебі, Тбілісі, 2026.",
-    colophon_r: "© Аня Волкова · Відтворення лише з дозволу.",
-    return_cover: "← Повернутися до обкладинки",
+    dist_label: "— Слідкувати —",
+    dist: [],
+    type_label: "",
+    type_body: "",
+    colophon_l: "Львів, 2026.",
+    colophon_r: "© Анна Старостіна · Відтворення лише з дозволу.",
+    return_cover: "← На головну",
   },
 };
 

@@ -7,7 +7,7 @@ import {
 } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/Providers";
-import { SITE_URL } from "@/lib/seo";
+import { SITE_URL, SEO } from "@/lib/seo";
 
 // The four typefaces actually rendered by the design, exposed as CSS variables
 // consumed by globals.css (--display / --condensed / --body / --mono).
@@ -43,12 +43,11 @@ const jetbrains = JetBrains_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "Anya Volkov — An Illustrator's Journal",
-  description:
-    "The journal of illustrator and printmaker Anya Volkov — commissioned and personal work, slowly made.",
+  title: SEO.en.title,
+  description: SEO.en.description,
   openGraph: {
     type: "website",
-    siteName: "Anya Volkov",
+    siteName: "Anna Starostina",
   },
 };
 

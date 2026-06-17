@@ -6,7 +6,8 @@ import { STR, type Lang, type PageKey } from "@/lib/content";
 import { ROUTES, activeKey, stripLocale, withLocale } from "@/lib/routes";
 import { useLang, useTheme, useNavigate } from "./Providers";
 
-const NAV_KEYS: PageKey[] = ["home", "issue", "project", "letter", "masthead"];
+// "project" opens from a work, not the nav — keep the route key, hide it here.
+const NAV_KEYS: PageKey[] = ["home", "issue", "letter", "masthead"];
 
 export function Topbar() {
   const lang = useLang();
@@ -112,11 +113,11 @@ export function Topbar() {
         >
           {lang === "uk" ? (
             <span>
-              Аня <span className="em">Волкова</span>
+              Анна <span className="em">Старостіна</span>
             </span>
           ) : (
             <span>
-              Anya <span className="em">Volkov</span>
+              Anna <span className="em">Starostina</span>
             </span>
           )}
           <span

@@ -22,7 +22,7 @@ export default buildConfig({
   admin: {
     user: Users.slug,
     importMap: { baseDir: path.resolve(dirname) },
-    meta: { titleSuffix: "— Anya Volkov" },
+    meta: { titleSuffix: "— Anna Starostina" },
   },
   editor: lexicalEditor(),
   collections: [Works, Tags, Media, Users],

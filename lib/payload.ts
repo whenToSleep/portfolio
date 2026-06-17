@@ -20,7 +20,7 @@ export type WorkCard = {
   id: number | string;
   num: string;
   title: string;
-  client: string;
+  context: string;
   year: number;
   plate: number;
   slug: string;
@@ -94,7 +94,7 @@ function mapWork(w: Record<string, unknown>): WorkCard {
     id: w.id as number | string,
     num: (w.num as string) ?? "",
     title: (w.title as string) ?? "",
-    client: (w.client as string) ?? "",
+    context: (w.client as string) ?? "",
     year: (w.year as number) ?? 0,
     plate: (w.plate as number) ?? 1,
     slug: (w.slug as string) ?? "",

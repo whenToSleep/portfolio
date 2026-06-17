@@ -15,6 +15,20 @@ export const SITE_URL =
 /** OpenGraph locale codes for our two UI locales. */
 export const OG_LOCALE: Record<Lang, string> = { en: "en_US", uk: "uk_UA" };
 
+/** Site-level SEO title/description (home page + root default). */
+export const SEO: Record<Lang, { title: string; description: string }> = {
+  en: {
+    title: "Anna Starostina — Book Graphics Illustrator, Lviv",
+    description:
+      "Anna Starostina — book graphics student from Lviv. Ink, liner, pencil and digital: illustration, posters, playbills and book covers.",
+  },
+  uk: {
+    title: "Анна Старостіна — ілюстраторка книжкової графіки, Львів",
+    description:
+      "Анна Старостіна — студентка книжкової графіки зі Львова. Туш, лінер, олівець та діджитал: ілюстрація, постери, афіші, обкладинки.",
+  },
+};
+
 /** Strip authored inline HTML (e.g. <em>) so a string is safe as a meta description. */
 export function stripHtml(s: string): string {
   return s.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
