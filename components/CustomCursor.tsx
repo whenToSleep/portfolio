@@ -45,7 +45,6 @@ export function CustomCursor() {
       const target = e.target as Element | null;
       const hit = target?.closest?.("[data-cursor]");
       if (hit) {
-        dot.setAttribute("data-label", hit.getAttribute("data-cursor") || "");
         dot.classList.add("is-hover");
       }
     };
@@ -65,8 +64,9 @@ export function CustomCursor() {
     document.addEventListener("mouseout", onOut);
 
     const loop = () => {
-      x += (tx - x) * 0.22;
-      y += (ty - y) * 0.22;
+      // Follow the pointer 1:1 (no smoothing / speed limit).
+      x = tx;
+      y = ty;
       dot.style.transform = "translate(" + x + "px," + y + "px)";
       raf = requestAnimationFrame(loop);
     };

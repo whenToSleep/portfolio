@@ -73,12 +73,12 @@ export function ProjectPage({ work }: { work: WorkCard }) {
               {t.tomb_title}
             </div>
             <dl style={{ margin: 0 }}>
-              {tomb.map(([k, v, ital]) => (
+              {tomb.map(([k, v]) => (
                 <div key={k} style={{ marginBottom: 16 }}>
                   <dt className="mono" style={{ opacity: 0.6, marginBottom: 4 }}>
                     {k}
                   </dt>
-                  <dd style={{ margin: 0, fontFamily: "var(--body)", fontSize: 15, fontStyle: ital ? "italic" : "normal" }}>
+                  <dd style={{ margin: 0, fontFamily: "var(--body)", fontSize: 15, fontStyle: "normal" }}>
                     {v}
                   </dd>
                 </div>
@@ -111,7 +111,7 @@ export function ProjectPage({ work }: { work: WorkCard }) {
                 <Plate variant={w.plate} style={{ width: "100%", aspectRatio: "5 / 4" }} />
               )}
               <figcaption
-                style={{ marginTop: 10, fontFamily: "var(--body)", fontStyle: "italic", fontSize: 12, opacity: 0.75, lineHeight: 1.5 }}
+                style={{ marginTop: 10, fontFamily: "var(--body)", fontStyle: "normal", fontSize: 12, opacity: 0.75, lineHeight: 1.5 }}
               >
                 <span className="mono" style={{ fontStyle: "normal", marginRight: 8 }}>
                   {lang === "uk" ? "Іл. 1" : "Fig. 1"}
@@ -140,7 +140,7 @@ export function ProjectPage({ work }: { work: WorkCard }) {
                   textIndent: 0,
                   lineHeight: 1.15,
                   letterSpacing: "-0.012em",
-                  fontStyle: "italic",
+                  fontStyle: "normal",
                   fontVariationSettings: '"opsz" 144, "SOFT" 40, "wght" 380',
                 }}
               >
@@ -164,7 +164,7 @@ export function ProjectPage({ work }: { work: WorkCard }) {
                 <Plate variant={(w.plate % 4) + 1} style={{ width: "100%", aspectRatio: "4 / 5" }} />
               )}
               <figcaption
-                style={{ marginTop: 10, fontFamily: "var(--body)", fontStyle: "italic", fontSize: 12, opacity: 0.75, lineHeight: 1.5 }}
+                style={{ marginTop: 10, fontFamily: "var(--body)", fontStyle: "normal", fontSize: 12, opacity: 0.75, lineHeight: 1.5 }}
               >
                 <span className="mono" style={{ fontStyle: "normal", marginRight: 8 }}>
                   {lang === "uk" ? "Іл. 2" : "Fig. 2"}
@@ -189,7 +189,7 @@ export function ProjectPage({ work }: { work: WorkCard }) {
               <span className="mono" style={{ opacity: 0.7 }}>
                 ✦ ✦ ✦
               </span>
-              <span style={{ fontFamily: "var(--body)", fontStyle: "italic", fontSize: 14, opacity: 0.85 }}>
+              <span style={{ fontFamily: "var(--body)", fontStyle: "normal", fontSize: 14, opacity: 0.85 }}>
                 {t.byline}, {w.year}
               </span>
             </div>
@@ -207,7 +207,7 @@ export function ProjectPage({ work }: { work: WorkCard }) {
             <a
               className="e-link"
               data-cursor="Read"
-              style={{ fontFamily: "var(--display)", fontSize: 22, fontStyle: "italic" }}
+              style={{ fontFamily: "var(--display)", fontSize: 22, fontStyle: "normal" }}
               onClick={() => navigate(ROUTES.letter)}
             >
               {t.cont_letter}

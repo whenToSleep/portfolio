@@ -135,7 +135,7 @@ export function IssuePage({ works, tags }: { works: WorkCard[]; tags: TagItem[] 
                     }}
                   >
                     {w.title}
-                    <span style={{ fontStyle: "italic", opacity: 0.55, fontSize: 18, marginLeft: 10 }}>
+                    <span style={{ fontStyle: "normal", opacity: 0.55, fontSize: 18, marginLeft: 10 }}>
                       — {w.context}
                     </span>
                   </div>
@@ -182,7 +182,7 @@ export function IssuePage({ works, tags }: { works: WorkCard[]; tags: TagItem[] 
               padding: "64px 0",
               fontFamily: "var(--display)",
               fontSize: "clamp(1.375rem, 1.1rem + 1.3vw, 1.75rem)",
-              fontStyle: "italic",
+              fontStyle: "normal",
               opacity: 0.7,
             }}
           >

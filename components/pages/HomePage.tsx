@@ -40,7 +40,7 @@ export function HomePage({ home, site }: { home: HomeContent; site: SiteSettings
           style={{ fontSize: "clamp(3.5rem, 0.9rem + 10.67vw, 10.5rem)", margin: "28px 0 48px", letterSpacing: "-0.025em", lineHeight: 1.0 }}
         >
           <span>
-            {firstNames} <span style={{ fontStyle: "italic" }}>{lastName}</span>
+            {firstNames} <span>{lastName}</span>
           </span>
         </h1>
 
@@ -84,7 +84,7 @@ export function HomePage({ home, site }: { home: HomeContent; site: SiteSettings
               <span>
                 <em
                   style={{
-                    fontStyle: "italic",
+                    fontStyle: "normal",
                     fontFamily: "var(--body)",
                     textTransform: "none",
                     letterSpacing: 0,

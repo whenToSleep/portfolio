@@ -60,7 +60,7 @@ export function MastheadPage({ masthead }: { masthead: MastheadContent }) {
                   gap: 0,
                 }}
               >
-                <div style={{ gridColumn: "1 / span 6", fontFamily: "var(--body)", fontSize: 15, fontStyle: "italic" }}>
+                <div style={{ gridColumn: "1 / span 6", fontFamily: "var(--body)", fontSize: 15, fontStyle: "normal" }}>
                   {row.role}
                 </div>
                 <div style={{ gridColumn: "7 / span 6", textAlign: "right" }}>

@@ -65,7 +65,7 @@ export function LetterPage({ letter }: { letter: LetterContent }) {
           <p
             style={{
               marginTop: 56,
-              fontStyle: "italic",
+              fontStyle: "normal",
               fontFamily: "var(--display)",
               fontSize: 22,
               textIndent: 0,

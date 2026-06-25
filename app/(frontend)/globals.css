@@ -89,9 +89,11 @@ body.grid-on .page::after {
 }
 .display-italic {
   font-family: var(--display);
-  font-style: italic;
+  font-style: normal;
   font-variation-settings: "opsz" 144, "SOFT" 30, "wght" 400;
 }
+/* No italics anywhere on the site. */
+em, i { font-style: normal; }
 /* The four large page-title headings (name / Works / About / Contacts) use the
    local Holos face. Declared after .display so it wins font-family at equal
    specificity; the variable opsz/SOFT/wght axes don't apply to a static OTF. */
@@ -160,17 +162,18 @@ body.grid-on .page::after {
 /* ---------- Lang / theme controls ---------- */
 .meta-controls {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 12px;
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
-.meta-controls .ctrl-group { display: flex; align-items: baseline; gap: 6px; }
+.meta-controls .ctrl-group { display: flex; align-items: center; gap: 2px; }
 .meta-controls .sep { opacity: 0.3; }
 .meta-controls .divider { opacity: 0.25; margin: 0 2px; }
-.meta-controls a { cursor: pointer; }
+/* Padding enlarges the tap target; negative vertical margin keeps the bar height. */
+.meta-controls a { cursor: pointer; display: inline-flex; align-items: center; padding: 8px 8px; margin: -8px 0; }
 .meta-controls a.on { color: var(--accent); }
 .meta-controls a:not(.on) { opacity: 0.55; }
 .meta-controls a:not(.on):hover { opacity: 1; }
@@ -191,7 +194,7 @@ body.grid-on .page::after {
   letter-spacing: -0.01em;
   cursor: pointer;
 }
-.topbar .brand .em { font-style: italic; }
+.topbar .brand .em { font-style: normal; }
 .topbar nav {
   display: flex;
   gap: 28px;
@@ -445,23 +448,11 @@ body.reveal-ready .reveal.is-in {
   will-change: transform;
 }
 .cursor-dot.is-visible { opacity: 1; }
-.cursor-dot::after {
-  content: attr(data-label);
-  font-family: var(--mono);
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--paper);
-  opacity: 0;
-  transition: opacity 220ms ease;
-  white-space: nowrap;
-}
 .cursor-dot.is-hover {
   width: 56px;
   height: 56px;
   margin: -28px 0 0 -28px;
 }
-.cursor-dot.is-hover::after { opacity: 1; }
 
 body.cursor-on,
 body.cursor-on a,

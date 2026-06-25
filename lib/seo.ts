@@ -18,14 +18,14 @@ export const OG_LOCALE: Record<Lang, string> = { en: "en_US", uk: "uk_UA" };
 /** Site-level SEO title/description (home page + root default). */
 export const SEO: Record<Lang, { title: string; description: string }> = {
   en: {
-    title: "Anna Starostina — Book Graphics Illustrator, Lviv",
+    title: "Anna Starostina — Book Illustrator, Lviv",
     description:
-      "Anna Starostina — book graphics student from Lviv. Ink, liner, pencil and digital: illustration, posters, playbills and book covers.",
+      "Anna Starostina — book illustrator from Lviv. Playbills, posters and book covers, drawn in graphic techniques: ink, pen and digital.",
   },
   uk: {
-    title: "Анна Старостіна — ілюстраторка книжкової графіки, Львів",
+    title: "Анна Старостіна — книжкова ілюстраторка, Львів",
     description:
-      "Анна Старостіна — студентка книжкової графіки зі Львова. Туш, лінер, олівець та діджитал: ілюстрація, постери, афіші, обкладинки.",
+      "Анна Старостіна — книжкова ілюстраторка зі Львова. Афіші, плакати та обкладинки книг у техніці графіки: туш, перо та digital.",
   },
 };
 
