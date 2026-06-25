@@ -5,6 +5,7 @@ import {
   Source_Serif_4,
   JetBrains_Mono,
 } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { ThemeProvider } from "@/components/Providers";
 import { SITE_URL, SEO } from "@/lib/seo";
@@ -41,6 +42,14 @@ const jetbrains = JetBrains_Mono({
   display: "swap",
 });
 
+// Local display face used only for the four large page-title headings
+// (.display-title in globals.css). Latin + Ukrainian Cyrillic; single bold style.
+const holos = localFont({
+  src: "./fonts/Holos-Bold.otf",
+  variable: "--font-holos",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: SEO.en.title,
@@ -65,7 +74,7 @@ export default function RootLayout({
       lang="en"
       data-theme="light"
       suppressHydrationWarning
-      className={`${playfair.variable} ${bricolage.variable} ${sourceSerif.variable} ${jetbrains.variable}`}
+      className={`${playfair.variable} ${bricolage.variable} ${sourceSerif.variable} ${jetbrains.variable} ${holos.variable}`}
     >
       <body>
         <script dangerouslySetInnerHTML={{ __html: noFlash }} />

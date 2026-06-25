@@ -7,6 +7,7 @@ import { useReveal } from "@/hooks/useReveal";
 import { useLang, useNavigate } from "../Providers";
 import { Plate } from "../Plate";
 import { Html } from "../Html";
+import { SocialIcon } from "../SocialIcon";
 
 export function HomePage({ home, site }: { home: HomeContent; site: SiteSettings }) {
   const lang = useLang();
@@ -35,7 +36,7 @@ export function HomePage({ home, site }: { home: HomeContent; site: SiteSettings
         </div>
 
         <h1
-          className="display reveal"
+          className="display display-title reveal"
           style={{ fontSize: "clamp(3.5rem, 0.9rem + 10.67vw, 10.5rem)", margin: "28px 0 48px", letterSpacing: "-0.025em", lineHeight: 1.0 }}
         >
           <span>
@@ -122,39 +123,23 @@ export function HomePage({ home, site }: { home: HomeContent; site: SiteSettings
                 {home.avail}
               </p>
             </div>
-            <div style={{ gridColumn: "7 / span 3" }}>
-              <div className="mono" style={{ opacity: 0.6, marginBottom: 14 }}>
-                {t.home_reach_label}
-              </div>
-              <a
-                className="e-link"
-                data-cursor="Mail"
-                href={`mailto:${site.email}`}
-                style={{ fontFamily: "var(--body)", fontSize: 17, fontStyle: "italic" }}
-              >
-                {site.email}
-              </a>
-            </div>
             {site.socials.length > 0 && (
-              <div style={{ gridColumn: "10 / span 3" }}>
+              <div style={{ gridColumn: "7 / span 6" }}>
                 <div className="mono" style={{ opacity: 0.6, marginBottom: 14 }}>
-                  {t.home_follow_label}
+                  {t.home_reach_label}
                 </div>
-                <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 10 }}>
+                <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", alignItems: "center", gap: 22 }}>
                   {site.socials.map((s, i) => (
-                    <li key={i} style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12 }}>
-                      <span className="sub" style={{ fontSize: 11 }}>
-                        {s.label}
-                      </span>
+                    <li key={i} style={{ display: "flex" }}>
                       <a
-                        className="e-link"
+                        className="social-link"
                         data-cursor="Visit"
                         href={s.url}
                         target="_blank"
                         rel="noopener"
-                        style={{ fontFamily: "var(--body)", fontSize: 15, fontStyle: "italic" }}
+                        aria-label={s.label}
                       >
-                        {s.handle}
+                        <SocialIcon platform={s.label} />
                       </a>
                     </li>
                   ))}

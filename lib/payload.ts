@@ -123,7 +123,7 @@ const arr = (o: Record<string, unknown>, k: string) =>
 // deploys, so without a key change a rebuild would re-serve the stale cached
 // reads instead of the new CMS data. `revalidate` also lets prod self-heal
 // (time-based ISR) on top of the Phase-6 tag invalidation.
-const CACHE_VERSION = "2026-06-content";
+const CACHE_VERSION = "2026-06-content-2";
 const CACHE_OPTS = (tags: string[]) => ({ tags, revalidate: 600 });
 
 export async function getTags(locale: Lang): Promise<TagItem[]> {

@@ -36,7 +36,7 @@ export function LetterPage({ letter }: { letter: LetterContent }) {
           <Html
             tag="h2"
             html={t.letter_title}
-            className="display"
+            className="display display-title"
             style={{ fontSize: "clamp(3rem, 1.05rem + 8vw, 8.25rem)", margin: 0, letterSpacing: "-0.025em", lineHeight: 0.9 }}
           />
         </div>

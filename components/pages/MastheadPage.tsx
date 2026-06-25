@@ -6,6 +6,7 @@ import type { MastheadContent } from "@/lib/payload";
 import { useReveal } from "@/hooks/useReveal";
 import { useLang, useNavigate } from "../Providers";
 import { Html } from "../Html";
+import { SocialIcon } from "../SocialIcon";
 
 export function MastheadPage({ masthead }: { masthead: MastheadContent }) {
   const lang = useLang();
@@ -32,7 +33,7 @@ export function MastheadPage({ masthead }: { masthead: MastheadContent }) {
         <Html
           tag="h2"
           html={t.mast_title}
-          className="display reveal"
+          className="display display-title reveal"
           style={{ fontSize: "clamp(3.25rem, 0.6rem + 10vw, 9.5rem)", margin: "32px 0 10px", letterSpacing: "-0.025em", lineHeight: 0.9 }}
         />
         <p
@@ -125,13 +126,14 @@ export function MastheadPage({ masthead }: { masthead: MastheadContent }) {
                     {row.label}
                   </span>
                   <a
-                    className="e-link"
+                    className="social-link"
                     data-cursor="Visit"
                     href={row.url}
                     target="_blank"
-                    style={{ fontFamily: "var(--body)", fontStyle: "italic", fontSize: 15, textAlign: "right" }}
+                    rel="noopener"
+                    aria-label={`${row.label}${row.handle ? ` — ${row.handle}` : ""}`}
                   >
-                    {row.handle}
+                    <SocialIcon platform={row.label} size={26} />
                   </a>
                 </li>
               ))}

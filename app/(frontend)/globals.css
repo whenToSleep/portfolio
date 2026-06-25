@@ -92,6 +92,20 @@ body.grid-on .page::after {
   font-style: italic;
   font-variation-settings: "opsz" 144, "SOFT" 30, "wght" 400;
 }
+/* The four large page-title headings (name / Works / About / Contacts) use the
+   local Holos face. Declared after .display so it wins font-family at equal
+   specificity; the variable opsz/SOFT/wght axes don't apply to a static OTF. */
+.display-title {
+  font-family: var(--font-holos), var(--display);
+  font-variation-settings: normal;
+}
+/* Social icon links (Home "Social" block, Contacts Telegram) */
+.social-link {
+  color: inherit;
+  display: inline-flex;
+  transition: color 200ms ease, transform 200ms ease;
+}
+.social-link:hover { color: var(--accent); transform: translateY(-2px); }
 .sub {
   font-family: var(--condensed);
   font-stretch: 75%;
@@ -300,6 +314,11 @@ body.reveal-ready .reveal.is-in {
 /* ---------- Mobile (<=768px). Desktop (>=769px) is untouched. ---------- */
 @media (max-width: 768px) {
   .page { padding: 0 20px; }
+
+  /* Holos is wider/heavier than the old Playfair display, so the long name
+     ("Starostina"/"Старостіна") overran the content box at phone widths.
+     Cap the four page-title headings on mobile only — desktop is untouched. */
+  .display-title { font-size: clamp(2.5rem, 9.5vw, 3.5rem) !important; }
 
   /* Collapse the 12-col grid: one column, and force every inline grid-column
      span to full width (otherwise inline `grid-column: 7 / span 6` makes

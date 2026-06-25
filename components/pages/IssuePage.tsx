@@ -36,7 +36,7 @@ export function IssuePage({ works, tags }: { works: WorkCard[]; tags: TagItem[] 
         </div>
 
         <h2
-          className="display reveal"
+          className="display display-title reveal"
           style={{ fontSize: "clamp(3rem, 1.05rem + 8vw, 8.25rem)", margin: "32px 0 10px", letterSpacing: "-0.022em", lineHeight: 0.92 }}
           dangerouslySetInnerHTML={{ __html: t.issue_title }}
         />
